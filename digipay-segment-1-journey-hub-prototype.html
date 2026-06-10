@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigiPay — Journey Hub (L0–L3)</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dp-navy:#0D1B2A; --dp-blue:#1B4FD8; --dp-blue-light:#EBF0FF;
+  --dp-green:#00A67E; --dp-green-light:#E6F7F3;
+  --dp-purple:#7B2FBE; --dp-purple-light:#F3E8FF;
+  --dp-gold:#F5A623; --dp-gold-light:#FFF8EC;
+  --gray-50:#F8F9FA; --gray-100:#F1F3F5; --gray-200:#E9ECEF;
+  --gray-300:#DEE2E6; --gray-400:#CED4DA; --gray-500:#ADB5BD;
+  --gray-600:#6C757D; --gray-700:#495057; --gray-900:#212529;
+  --red:#EF3E42; --sep-blue:#0066CC; --sep-green:#28A745;
+  --r-sm:8px; --r-md:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900);direction:rtl;min-height:100vh;}
+
+.app{display:grid;grid-template-columns:340px 1fr 220px;min-height:100vh;}
+@media(max-width:1100px){.app{grid-template-columns:1fr;}.dashboard{order:2;}.sidebar{order:3;}}
+
+/* journey dashboard */
+.dashboard{background:linear-gradient(180deg,#0a0a14 0%,#12121F 100%);border-left:1px solid rgba(255,255,255,.06);padding:20px 16px;overflow-y:auto;max-height:100vh;position:sticky;top:0;}
+.dash-head{margin-bottom:16px;}
+.dash-head h2{font-size:14px;font-weight:900;color:white;display:flex;align-items:center;gap:6px;}
+.dash-stats{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.dash-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 8px;font-size:8px;color:rgba(255,255,255,.45);}
+.dash-stat strong{color:#93C5FD;font-size:10px;display:block;}
+.dash-section{margin-bottom:14px;}
+.dash-label{font-size:9px;font-weight:800;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.seg-matrix{display:flex;flex-direction:column;gap:8px;}
+.seg-group{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;}
+.seg-group-hd{padding:7px 10px;font-size:9px;font-weight:800;color:#FCD34D;background:rgba(252,211,77,.08);border-bottom:1px solid rgba(255,255,255,.06);}
+.seg-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:6px;}
+.seg-cell{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:9px;padding:7px 8px;cursor:pointer;transition:all .18s;text-align:right;}
+.seg-cell:hover{border-color:rgba(27,79,216,.5);background:rgba(27,79,216,.08);}
+.seg-cell.active{border-color:var(--dp-blue);background:rgba(27,79,216,.18);box-shadow:0 0 0 1px rgba(27,79,216,.3);}
+.seg-cell .sc-trust{font-size:7px;font-weight:700;padding:1px 5px;border-radius:100px;display:inline-block;margin-bottom:3px;}
+.seg-cell .sc-trust.yes{background:rgba(0,166,126,.2);color:#34D399;}
+.seg-cell .sc-trust.no{background:rgba(239,62,66,.15);color:#FCA5A5;}
+.seg-cell .sc-fin{font-size:8px;font-weight:700;color:rgba(255,255,255,.7);line-height:1.3;}
+.seg-cell .sc-merchant{font-size:7px;color:rgba(255,255,255,.35);margin-top:3px;}
+.seg-cell .sc-icon{float:left;font-size:14px;opacity:.7;}
+.user-pills{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.user-pill{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 9px;cursor:pointer;transition:.15s;}
+.user-pill:hover{border-color:rgba(255,255,255,.2);}
+.user-pill.active{border-color:#FCD34D;background:rgba(252,211,77,.1);}
+.user-pill .up-lvl{font-size:10px;font-weight:900;color:#FCD34D;}
+.user-pill.active .up-lvl{color:#FCD34D;}
+.user-pill.done .up-lvl{color:#34D399;}
+.user-pill .up-desc{font-size:7px;color:rgba(255,255,255,.4);margin-top:2px;line-height:1.4;}
+.journey-path{background:rgba(27,79,216,.08);border:1px solid rgba(27,79,216,.2);border-radius:10px;padding:10px;margin-bottom:12px;}
+.jp-title{font-size:8px;font-weight:800;color:#93C5FD;margin-bottom:8px;}
+.jp-steps{display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.jp-step{background:rgba(255,255,255,.08);border-radius:100px;padding:3px 8px;font-size:7px;font-weight:600;color:rgba(255,255,255,.55);}
+.jp-step.highlight{background:var(--dp-blue);color:white;}
+.jp-arrow{font-size:8px;color:rgba(255,255,255,.2);}
+.launch-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--dp-blue),#6366F1);border:none;border-radius:12px;color:white;font-family:'Vazirmatn',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.launch-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,79,216,.4);}
+.launch-btn:active{transform:none;}
+.active-combo{background:rgba(0,166,126,.1);border:1px solid rgba(0,166,126,.25);border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:8px;color:rgba(255,255,255,.5);line-height:1.6;}
+.active-combo strong{color:white;font-size:9px;}
+.center-col{display:flex;flex-direction:column;align-items:center;}
+.context-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(27,79,216,.15);border:1px solid rgba(27,79,216,.3);border-radius:100px;padding:4px 10px;font-size:8px;font-weight:700;color:#93C5FD;margin-bottom:10px;cursor:pointer;}
+.context-chip:hover{background:rgba(27,79,216,.25);}
+.fin-banner{background:#FFF8EC;border:1px solid #F5D78E;border-radius:8px;margin:0 10px 6px;padding:7px 10px;font-size:8px;color:#8a6200;font-weight:600;line-height:1.5;display:none;}
+.fin-banner.show{display:block;}
+.co-blocked{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;margin:0 10px 6px;padding:8px 10px;font-size:8px;color:#991B1B;display:none;}
+.co-blocked.show{display:block;}
+.pin-dots{display:flex;gap:8px;justify-content:center;margin:16px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--gray-300);}
+.pin-dot.fil{background:var(--dp-navy);border-color:var(--dp-navy);}
+
+.main{display:flex;flex-direction:column;align-items:center;padding:32px 24px 48px;}
+.top-bar{width:100%;max-width:420px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.top-bar h1{font-size:16px;font-weight:800;color:white;}
+.top-bar p{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+.reset-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:6px 14px;border-radius:100px;font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:700;cursor:pointer;}
+
+.breadcrumb{width:100%;max-width:420px;display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.bc-step{font-size:9px;font-weight:600;color:rgba(255,255,255,.25);padding:3px 8px;border-radius:100px;background:rgba(255,255,255,.04);}
+.bc-step.active{background:var(--dp-blue);color:white;}
+.bc-step.done{background:rgba(0,166,126,.2);color:#34D399;}
+.bc-arrow{font-size:10px;color:rgba(255,255,255,.15);}
+
+.phone{width:280px;border-radius:28px;overflow:hidden;background:#F5F5F5;box-shadow:0 12px 48px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);min-height:520px;display:flex;flex-direction:column;position:relative;}
+
+/* full-page screens (SEP + Thank You only) */
+.fp-screen{display:none;flex:1;flex-direction:column;animation:fadeIn .25s ease;}
+.fp-screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* checkout scene — always visible when widget mode active */
+.checkout-scene{display:none;flex:1;flex-direction:column;position:relative;min-height:520px;}
+.checkout-scene.active{display:flex;}
+/* bottom sheet — positioned at phone level via .phone .bottom-sheet */
+.bottom-sheet{position:absolute;bottom:0;left:0;right:0;background:white;border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.18);transform:translateY(110%);transition:transform .28s cubic-bezier(.32,.72,0,1);}
+.sheet-handle-row{padding:10px 0 4px;display:flex;justify-content:center;}
+.sheet-handle{width:36px;height:4px;background:var(--gray-300);border-radius:100px;}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:4px 14px 10px;border-bottom:1px solid var(--gray-100);}
+.sheet-header-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--dp-navy);}
+.sheet-logo{width:22px;height:22px;border-radius:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:transparent;font-size:0;overflow:hidden;}
+.sheet-logo img{width:18px;height:auto;display:block;object-fit:contain;}
+.sheet-close{width:24px;height:24px;background:var(--gray-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gray-600);cursor:pointer;border:none;font-family:inherit;}
+.sheet-body{overflow-y:auto;}
+.sheet-panel{display:none;}
+.sheet-panel.active{display:block;}
+.sheet-btn{width:100%;padding:11px;border:none;border-radius:var(--r-md);font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:white;margin-top:12px;}
+.sheet-btn.navy{background:var(--dp-navy);}
+.sheet-btn.blue{background:var(--dp-blue);}
+.sheet-btn.green{background:var(--dp-green);}
+
+/* checkout UI */
+.co-bg{display:flex;flex-direction:column;background:#F5F5F5;flex:1;transition:filter .2s;}
+.co-topbar{background:white;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);}
+.co-title{font-size:11px;font-weight:700;color:var(--gray-700);padding:10px 14px 6px;}
+.co-rows{padding:0 10px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.pay-wrap{border-radius:10px;overflow:hidden;border:2px solid transparent;}
+.pay-wrap.sel-wallet{border-color:var(--dp-green);}
+.pay-wrap .co-row{margin:0;border-radius:0;border:none;}
+.pay-wrap .inst-detail{border-radius:0;}
+.co-row{background:white;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:8px;border:1.5px solid var(--gray-200);cursor:pointer;transition:.15s;}
+.co-row:hover{border-color:var(--gray-400);}
+.co-row.sel-green{border-color:var(--dp-green);background:#F8FDFB;}
+.co-row.sel-blue{border-color:var(--dp-blue);background:#FAFBFF;}
+.co-row.sel-teal{border-color:var(--dp-green);background:#F8FDFB;}
+.co-row.clickable-credit{border-color:var(--dp-blue);cursor:pointer;}
+.co-row.clickable-credit:hover{background:var(--dp-blue-light);}
+.radio{width:15px;height:15px;border-radius:50%;border:2px solid var(--gray-400);flex-shrink:0;}
+.radio.on-blue{border-color:var(--dp-blue);background:var(--dp-blue);box-shadow:inset 0 0 0 3px white;}
+.radio.on-green{border-color:var(--dp-green);background:var(--dp-green);box-shadow:inset 0 0 0 3px white;}
+.radio.on-teal{border-color:var(--dp-green);background:var(--dp-green);box-shadow:inset 0 0 0 3px white;}
+.co-name{font-size:11px;font-weight:700;color:var(--dp-navy);flex:1;}
+.co-sub{font-size:9px;color:var(--gray-500);margin-top:2px;}
+.co-sub.blue{color:var(--dp-blue);}
+.co-sub.green{color:var(--dp-green);}
+.dp-badge{background:transparent;width:22px;height:22px;border-radius:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0;overflow:hidden;}
+.dp-badge img{width:18px;height:auto;display:block;object-fit:contain;}
+.cashback-badge{background:var(--dp-gold-light);color:#8a6200;border:1px solid #F5D78E;border-radius:100px;padding:3px 8px;font-size:8px;font-weight:800;}
+.balance-ok-badge{background:#E6F7F3;color:#1A6B3C;border:1px solid #C3EBE0;border-radius:100px;padding:3px 8px;font-size:8px;font-weight:800;white-space:nowrap;}
+.credit-cta{font-size:9px;color:var(--dp-blue);font-weight:700;}
+.co-foot{padding:10px;background:white;border-top:1px solid var(--gray-200);}
+.pay-btn{background:var(--red);color:white;padding:12px;border-radius:10px;font-size:11px;font-weight:800;cursor:pointer;border:none;width:100%;font-family:'Vazirmatn',sans-serif;}
+.pay-btn .pay-old{text-decoration:line-through;opacity:.65;font-weight:600;margin-left:4px;font-size:9px;}
+.pay-btn:disabled{opacity:.4;cursor:not-allowed;}
+.inst-block{background:white;border-radius:10px;border:2px solid var(--dp-blue);overflow:hidden;}
+.inst-head{display:flex;align-items:center;gap:8px;padding:11px 13px;}
+.inst-detail{background:#F7F9FF;padding:8px 13px;border-top:1px solid var(--dp-blue-light);}
+.inst-row{display:flex;justify-content:space-between;font-size:9px;padding:4px 0;border-bottom:1px solid var(--gray-200);}
+.inst-row:last-child{border-bottom:none;}
+.inst-label{color:var(--gray-600);}
+.inst-val{font-weight:700;color:var(--dp-navy);direction:ltr;}
+.inst-note{font-size:8px;color:var(--gray-500);margin-top:4px;}
+
+.kyc-circle{width:52px;height:52px;background:var(--dp-blue-light);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:8px;}
+.input-lbl{font-size:9px;font-weight:600;color:var(--gray-600);margin-bottom:4px;}
+.input-f{width:100%;padding:8px 11px;border:1.5px solid var(--dp-blue);border-radius:var(--r-sm);font-size:11px;font-family:'Vazirmatn',sans-serif;color:var(--dp-navy);background:var(--dp-blue-light);text-align:right;margin-bottom:10px;}
+
+.spin-wrap{text-align:center;padding:12px 0;}
+.spin-circle{width:52px;height:52px;background:var(--dp-blue-light);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;position:relative;margin-bottom:8px;}
+.spin-ring{position:absolute;inset:-3px;border:2.5px solid transparent;border-top-color:var(--dp-blue);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-title{font-size:13px;font-weight:800;color:var(--dp-navy);}
+.check-list{list-style:none;margin-top:10px;}
+.check-list li{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--gray-100);font-size:11px;color:var(--gray-700);}
+.ci{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.ci.done{background:var(--dp-green-light);color:var(--dp-green);}
+.ci.loading{background:var(--dp-blue-light);border:2px solid var(--dp-blue);animation:pulse 1.2s ease-in-out infinite;}
+.ci.pend{background:var(--gray-100);color:var(--gray-400);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.otp-boxes{display:flex;gap:5px;justify-content:center;margin:12px 0;flex-direction:row-reverse;}
+.otp-box{width:32px;height:38px;border:1.5px solid var(--gray-300);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--dp-navy);}
+.otp-box.act{border-color:var(--dp-blue);background:var(--dp-blue-light);}
+.otp-box.fil{border-color:var(--dp-navy);}
+
+.rc{border-radius:var(--r-md);padding:11px 13px;margin-bottom:8px;}
+.rc.four{background:var(--dp-purple-light);border:1px solid #D4B0F0;}
+.rc.monthly{background:var(--dp-blue-light);border:1px solid #B0C8F0;}
+.rc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.rc-title{font-size:11px;font-weight:800;color:var(--dp-navy);}
+.rc-row{display:flex;justify-content:space-between;font-size:10px;margin-top:4px;}
+.rc-key{color:var(--gray-600);}
+.rc-val{font-weight:700;color:var(--dp-navy);}
+.rc-tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:8px;font-weight:700;}
+.rc-tag.purple{background:var(--dp-purple);color:white;}
+.rc-tag.teal{background:var(--dp-green);color:white;}
+.inst-mini{background:rgba(255,255,255,.7);border-radius:8px;padding:6px 8px;margin-top:6px;}
+.inst-mini-row{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.inst-mini-row:last-child{border-bottom:none;}
+.inst-detail.green-bg{background:#F0FBF7;border-top-color:#C3EBE0;}
+.pay-block{border-radius:10px;overflow:hidden;border:1.5px solid var(--gray-200);background:white;cursor:pointer;}
+.pay-block.sel-4pay{border-color:var(--dp-blue);}
+.pay-block.sel-monthly{border-color:var(--dp-green);}
+.pay-block.sel-wallet{border-color:var(--dp-green);}
+
+.redirect-badge{background:rgba(27,79,216,.1);border:1px dashed rgba(27,79,216,.4);border-radius:8px;padding:8px 12px;font-size:9px;color:var(--dp-blue);text-align:center;margin-top:10px;font-weight:600;}
+
+/* SEP full page */
+.sep-gw{background:#F0F2F5;flex:1;display:flex;flex-direction:column;}
+.sep-url-bar{background:#E8E8E8;padding:6px 12px;font-size:8px;color:var(--gray-500);direction:ltr;text-align:left;border-bottom:1px solid var(--gray-300);}
+.sep-header{background:white;padding:12px;text-align:center;border-bottom:1px solid var(--gray-200);position:relative;}
+.sep-header h1{font-size:10px;font-weight:700;color:var(--gray-700);}
+.sep-logo{position:absolute;left:12px;top:50%;transform:translateY(-50%);}
+.sep-logo-icon{width:24px;height:24px;background:var(--sep-blue);border-radius:4px;display:flex;align-items:center;justify-content:center;color:white;font-size:8px;font-weight:900;}
+.sep-info{background:white;padding:10px 12px;border-bottom:1px solid var(--gray-200);}
+.sep-info-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--gray-100);font-size:9px;}
+.sep-info-row:last-child{border-bottom:none;}
+.sep-info-icon{width:22px;height:22px;background:var(--gray-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.sep-info-label{color:var(--gray-500);font-size:8px;}
+.sep-info-val{font-weight:700;}
+.sep-info-val.big{font-size:13px;color:var(--sep-blue);}
+.sep-info-val.words{font-size:8px;font-weight:400;color:var(--gray-600);}
+.sep-form{padding:10px 12px;flex:1;}
+.sep-field{margin-bottom:8px;}
+.sep-field-lbl{font-size:9px;font-weight:600;color:var(--gray-600);margin-bottom:3px;}
+.sep-input{border:1px solid var(--gray-300);border-radius:6px;padding:8px 10px;background:white;font-size:10px;color:var(--gray-400);}
+.sep-expiry{display:flex;gap:6px;}
+.sep-expiry .sep-input{flex:1;text-align:center;}
+.sep-captcha{display:flex;gap:6px;align-items:center;}
+.sep-captcha-img{background:linear-gradient(135deg,#4A90D9,#2E6BB5);color:white;font-size:15px;font-weight:900;letter-spacing:3px;padding:9px 14px;border-radius:6px;font-family:monospace;}
+.sep-dynamic{display:flex;gap:6px;}
+.sep-dynamic .sep-input{flex:1;}
+.sep-dynamic-btn{background:var(--sep-blue);color:white;border:none;border-radius:6px;padding:0 10px;font-family:'Vazirmatn',sans-serif;font-size:8px;font-weight:700;cursor:pointer;}
+.sep-pay-btn{background:var(--sep-green);color:white;text-align:center;padding:12px;border-radius:8px;font-size:11px;font-weight:800;margin-top:8px;cursor:pointer;}
+.fp-label{background:var(--dp-navy);color:rgba(255,255,255,.6);font-size:8px;font-weight:700;text-align:center;padding:5px;letter-spacing:.5px;}
+
+/* thank you */
+.ty-page{background:white;flex:1;display:flex;flex-direction:column;}
+.ty-top{background:#F8FDF9;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);}
+.ty-body{padding:16px 14px;flex:1;display:flex;flex-direction:column;align-items:center;}
+.ty-check{width:56px;height:56px;background:#E6F7F3;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;}
+.ty-title{font-size:13px;font-weight:800;color:#1A6B3C;text-align:center;}
+.ty-order{font-size:9px;color:var(--gray-500);margin:6px 0 12px;}
+.ty-card{width:100%;background:var(--gray-50);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:10px;}
+.ty-row{display:flex;justify-content:space-between;font-size:9px;margin-bottom:4px;}
+.ty-key{color:var(--gray-600);}
+.ty-val{font-weight:700;color:var(--dp-navy);}
+.ty-install{background:linear-gradient(135deg,#0D1B2A,#1B4FD8);border-radius:var(--r-md);padding:12px;width:100%;margin-top:8px;}
+.ty-install h4{font-size:10px;font-weight:800;color:white;margin-bottom:3px;}
+.ty-install p{font-size:8px;color:rgba(255,255,255,.65);margin-bottom:8px;}
+.ty-install-btn{width:100%;padding:8px;background:white;color:var(--dp-navy);border:none;border-radius:7px;font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:800;cursor:pointer;}
+
+.hint-bar{width:100%;max-width:420px;margin-top:14px;padding:10px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;font-size:10px;color:rgba(255,255,255,.5);line-height:1.6;text-align:center;}
+
+.sidebar{background:rgba(255,255,255,.03);border-right:1px solid rgba(255,255,255,.08);padding:24px 20px;overflow-y:auto;}
+@media(max-width:900px){.sidebar{border-right:none;border-top:1px solid rgba(255,255,255,.08);}}
+.sidebar h2{font-size:13px;font-weight:800;color:white;margin-bottom:12px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;}
+.tag{padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;}
+.tag-blue{background:var(--dp-blue);color:white;}
+.tag-gold{background:var(--dp-gold);color:var(--dp-navy);}
+.tag-green{background:var(--dp-green);color:white;}
+.note-block{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;margin-bottom:10px;}
+.note-block h3{font-size:10px;font-weight:800;margin-bottom:6px;color:#FCD34D;}
+.note-block li{font-size:9px;color:rgba(255,255,255,.45);line-height:1.7;}
+.note-block ul{padding-right:14px;}
+.note-block .hl{color:rgba(255,255,255,.75);font-weight:600;}
+.note-block p{font-size:9px;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:6px;}
+.note-block p:last-child{margin-bottom:0;}
+.note-block .seg-tag{display:inline-block;padding:2px 7px;border-radius:100px;font-size:8px;font-weight:700;margin-left:4px;margin-bottom:4px;}
+.seg-tag.active{background:var(--dp-blue);color:white;}
+.seg-tag.pending{background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);}
+.user-level{display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:9px;color:rgba(255,255,255,.45);line-height:1.6;}
+.user-level:last-child{border-bottom:none;}
+.user-level .lvl{flex-shrink:0;background:rgba(255,255,255,.1);color:#FCD34D;font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;}
+.user-level .lvl.done{background:rgba(0,166,126,.25);color:#34D399;}
+.seg-table{width:100%;border-collapse:collapse;font-size:8px;margin-top:6px;}
+.seg-table th,.seg-table td{border:1px solid rgba(255,255,255,.1);padding:4px 5px;text-align:center;color:rgba(255,255,255,.4);}
+.seg-table th{background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);font-weight:700;}
+.seg-table .cur{background:rgba(27,79,216,.15);color:#93C5FD;font-weight:700;}
+
+/* merchant pages */
+.merchant-scene{display:none;flex:1;flex-direction:column;min-height:520px;overflow:hidden;}
+.merchant-scene.active{display:flex;}
+.m-page{display:flex;flex-direction:column;flex:1;min-height:0;}
+.phone.dimmed .merchant-scene.active,.phone.dimmed .checkout-scene.active .co-bg{filter:brightness(.42);pointer-events:none;}
+.phone .sheet-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:10;opacity:0;pointer-events:none;transition:opacity .2s;}
+.phone.dimmed .sheet-overlay{opacity:1;pointer-events:auto;}
+.phone .bottom-sheet{position:absolute;bottom:0;left:0;right:0;z-index:11;max-height:92%;}
+.phone .bottom-sheet.open{transform:translateY(0);}
+.phone .sheet-body{max-height:calc(92% - 56px);padding:10px 12px 14px;}
+.phone .bottom-sheet.tall-credit .sheet-body{max-height:calc(92% - 50px);padding-bottom:10px;}
+#panel-credit-result .rc{padding:8px 10px;margin-bottom:6px;}
+#panel-credit-result .rc .inst-mini{margin-top:4px;padding:4px 6px;}
+#panel-credit-result .sheet-btn{margin-top:8px;}
+
+.m-topbar{background:white;padding:8px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--gray-200);flex-shrink:0;}
+.m-back{font-size:14px;cursor:pointer;color:var(--gray-700);width:20px;text-align:center;}
+.m-search{flex:1;background:var(--gray-100);border-radius:8px;padding:6px 10px;font-size:9px;color:var(--gray-500);}
+.m-icons{display:flex;gap:8px;font-size:13px;}
+.m-scroll{flex:1;overflow-y:auto;}
+.l0-banner{background:linear-gradient(135deg,#1B4FD8,#0D1B2A);margin:8px 8px 0;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.l0-banner-text{font-size:10px;font-weight:800;color:white;line-height:1.5;}
+.l0-banner-sub{font-size:8px;color:rgba(255,255,255,.65);font-weight:400;margin-top:2px;}
+.l0-banner-cta{background:white;color:var(--dp-blue);font-size:8px;font-weight:800;padding:5px 10px;border-radius:100px;white-space:nowrap;}
+.l0-banner.done{background:linear-gradient(135deg,#00A67E,#0D6E52);}
+.l3-debt-banner{background:linear-gradient(135deg,#991B1B,#7F1D1D);margin:8px 8px 0;border-radius:10px;padding:10px 12px;display:none;align-items:center;gap:10px;}
+.l3-debt-banner .dp-icon img{filter:brightness(0) invert(1);}
+.l3-debt-body{flex:1;}
+.l3-debt-title{font-size:10px;font-weight:800;color:white;line-height:1.4;}
+.l3-debt-amount{font-size:9px;color:rgba(255,255,255,.85);margin-top:3px;font-weight:700;}
+.l3-debt-btn{background:white;color:#991B1B;font-size:8px;font-weight:800;padding:6px 12px;border:none;border-radius:100px;white-space:nowrap;cursor:pointer;}
+.debt-badge{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;border-radius:100px;padding:3px 8px;font-size:8px;font-weight:800;white-space:nowrap;}
+.credit-row{display:none;gap:5px;padding:8px 8px 0;}
+.credit-row.visible{display:flex;}
+.credit-card{flex:1;background:white;border:1px solid var(--gray-200);border-radius:10px;padding:6px 7px;display:flex;align-items:center;gap:5px;}
+.l1-balance-scroll{display:none;padding:8px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.l1-balance-scroll::-webkit-scrollbar{display:none;}
+.l1-balance-scroll.visible{display:block;}
+.l1-balance-scroll-inner{display:flex;gap:6px;padding:0 8px;width:max-content;}
+.l1-balance-scroll .credit-card{flex:0 0 108px;min-width:108px;}
+.credit-card.wallet-card{border-color:#C3EBE0;background:#F8FDFB;}
+.credit-card.loan-card{border-color:#F5D78E;background:#FFFBF0;}
+.credit-card-body{flex:1;min-width:0;}
+.credit-card-title{font-size:7px;font-weight:800;color:var(--dp-navy);line-height:1.25;}
+.credit-card-amount{font-size:6px;color:var(--gray-500);margin-top:1px;font-weight:500;line-height:1.25;}
+.credit-card .dp-icon{flex-shrink:0;}
+.credit-card .dp-icon-sm img{width:15px;}
+.credit-card .loan-icon{font-size:12px;flex-shrink:0;width:15px;text-align:center;}
+
+.discount-box{margin:0;background:white;border-radius:10px;border:1.5px solid var(--gray-200);padding:8px 10px;}
+.co-foot-sticky{background:white;border-top:1px solid var(--gray-200);padding:8px 10px;flex-shrink:0;}
+#bg-init,#bg-allocated{display:flex;flex-direction:column;flex:1;min-height:0;}
+.discount-row{display:flex;gap:5px;}
+.discount-input{flex:1;border:1px solid var(--gray-300);border-radius:8px;padding:6px 8px;font-size:9px;font-family:'Vazirmatn',sans-serif;text-align:right;}
+.discount-btn{background:var(--dp-navy);color:white;border:none;border-radius:8px;padding:6px 10px;font-size:8px;font-weight:800;font-family:'Vazirmatn',sans-serif;cursor:pointer;white-space:nowrap;}
+.discount-applied{margin-top:6px;font-size:8px;color:var(--dp-green);font-weight:700;display:none;}
+.discount-applied.show{display:block;}
+.co-price-summary{padding:0 10px 6px;}
+.co-price-old{font-size:9px;color:var(--gray-500);text-decoration:line-through;text-align:left;direction:ltr;}
+.co-price-new{font-size:10px;font-weight:800;color:var(--dp-navy);text-align:left;direction:ltr;margin-top:2px;}
+.co-price-note{font-size:7px;color:var(--gray-500);margin-top:3px;line-height:1.4;}
+
+.auth-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s;}
+.auth-opt:hover{border-color:var(--dp-blue);background:var(--dp-blue-light);}
+.auth-opt-icon{font-size:22px;flex-shrink:0;}
+.auth-opt-text{flex:1;}
+.auth-opt-title{font-size:10px;font-weight:800;color:var(--dp-navy);}
+.auth-opt-sub{font-size:8px;color:var(--gray-500);margin-top:2px;}
+
+.app-confirm-mock{background:linear-gradient(135deg,#0D1B2A,#1B4FD8);border-radius:12px;padding:14px;text-align:center;color:white;margin:10px 0;}
+.app-confirm-mock .app-logo{font-size:28px;margin-bottom:6px;}
+.dp-app{background:linear-gradient(180deg,#0D1B2A 0%,#1a3a8a 40%,#e8edf5 40%);flex:1;display:flex;flex-direction:column;position:relative;min-height:0;}
+.dp-app-bar{padding:10px 14px 6px;display:flex;align-items:center;justify-content:space-between;color:white;font-size:8px;font-weight:700;}
+.dp-app-hd{padding:0 14px 12px;display:flex;align-items:center;gap:8px;color:white;}
+.dp-app-hd img{width:22px;height:22px;border-radius:6px;background:white;padding:2px;}
+.dp-app-hd span{font-size:12px;font-weight:800;}
+.dp-app-body{flex:1;padding:14px;opacity:.35;}
+.dp-app-card{background:white;border-radius:12px;height:52px;margin-bottom:8px;}
+.dp-app-notif-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding-top:48px;}
+.dp-app-notif{background:white;border-radius:14px;width:calc(100% - 28px);padding:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);}
+.dp-app-notif-hd{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.dp-app-notif-hd img{width:28px;height:28px;border-radius:8px;}
+.notif-title{font-size:11px;font-weight:800;color:var(--dp-navy);}
+.notif-sub{font-size:8px;color:var(--gray-500);margin-top:2px;}
+.notif-amount{font-size:13px;font-weight:800;color:var(--dp-navy);text-align:center;margin:10px 0 12px;}
+.notif-actions{display:flex;gap:8px;}
+.notif-cancel,.notif-confirm{flex:1;padding:10px;border-radius:10px;font-size:10px;font-weight:800;font-family:'Vazirmatn',sans-serif;cursor:pointer;border:none;}
+.notif-cancel{background:var(--gray-100);color:var(--gray-600);}
+.notif-confirm{background:var(--dp-green);color:white;}
+.fp-redirect-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:white;padding:24px;text-align:center;}
+.pay-block.sel-loan{border-color:var(--dp-gold);}
+.radio.on-gold{border-color:var(--dp-gold);background:var(--dp-gold);box-shadow:inset 0 0 0 3px white;}
+.dp-promo-pdp.loan,.dp-promo-basket.loan{background:#FFFBF0;border:1px solid #F5D78E;}
+.co-rows-scroll{flex:1;overflow-y:auto;min-height:0;}
+.block-loans{display:none;}
+.block-loans.show{display:block;}
+
+.dp-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;line-height:0;}
+.dp-icon img{display:block;object-fit:contain;}
+.dp-icon-sm img{width:14px;height:auto;}
+.dp-icon-md img{width:18px;height:auto;}
+.dp-icon-lg img{width:22px;height:auto;}
+
+.plp-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px;}
+.plp-card{background:white;border-radius:10px;overflow:hidden;border:1px solid var(--gray-200);cursor:pointer;}
+.plp-card:active{transform:scale(.98);}
+.plp-img-wrap{position:relative;height:80px;background:var(--gray-50);}
+.plp-img{height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.plp-promo-overlay{position:absolute;bottom:5px;left:5px;right:5px;background:rgba(255,255,255,.93);border-radius:100px;padding:3px 5px 3px 7px;display:flex;align-items:center;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+.plp-promo-overlay .dp-promo-text{flex:1;font-size:6px;font-weight:700;color:var(--gray-700);text-align:right;line-height:1.35;padding-left:2px;}
+.plp-info{padding:6px 7px 8px;}
+.plp-name{font-size:8px;font-weight:600;color:var(--gray-700);line-height:1.4;height:22px;overflow:hidden;}
+.plp-price{font-size:9px;font-weight:800;color:var(--dp-navy);margin-top:4px;}
+.plp-price span{font-size:7px;font-weight:400;color:var(--gray-500);}
+
+.dp-promo-pdp{margin:8px 0 0;background:#EBF5FF;border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px;}
+.dp-promo-pdp .dp-promo-text{flex:1;font-size:8px;font-weight:700;color:var(--dp-navy);text-align:right;line-height:1.5;}
+
+.dp-promo-basket{margin:8px;background:#EBF5FF;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.dp-promo-basket .dp-promo-lines{flex:1;text-align:right;}
+.dp-promo-basket .dp-promo-main{font-size:10px;font-weight:800;color:var(--dp-navy);line-height:1.4;}
+.dp-promo-basket .dp-promo-sub{font-size:8px;color:var(--gray-600);margin-top:2px;font-weight:500;}
+.pdp-hero{height:140px;background:white;display:flex;align-items:center;justify-content:center;font-size:56px;border-bottom:1px solid var(--gray-200);}
+.pdp-body{padding:10px;background:white;}
+.pdp-title{font-size:11px;font-weight:800;color:var(--dp-navy);line-height:1.5;}
+.pdp-price-row{display:flex;align-items:baseline;gap:4px;margin-top:6px;}
+.pdp-price{font-size:13px;font-weight:900;color:var(--dp-navy);}
+.pdp-price-unit{font-size:8px;color:var(--gray-500);}
+.pdp-desc{font-size:8px;color:var(--gray-600);margin-top:8px;line-height:1.6;}
+.m-foot{background:white;border-top:1px solid var(--gray-200);padding:8px;flex-shrink:0;}
+.m-btn{width:100%;padding:10px;border:none;border-radius:10px;font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:800;cursor:pointer;}
+.m-btn.red{background:var(--red);color:white;}
+.m-btn.blue{background:var(--dp-blue);color:white;}
+
+.basket-item{display:flex;gap:8px;padding:10px;background:white;margin:8px;border-radius:8px;border:1px solid var(--gray-200);}
+.basket-thumb{width:52px;height:52px;background:var(--gray-50);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.basket-info{flex:1;}
+.basket-name{font-size:9px;font-weight:700;color:var(--dp-navy);line-height:1.4;}
+.basket-price{font-size:10px;font-weight:800;color:var(--dp-navy);margin-top:4px;}
+.basket-summary{margin:0 8px 8px;background:white;border-radius:8px;padding:10px;border:1px solid var(--gray-200);}
+.basket-sum-row{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;}
+.basket-sum-key{color:var(--gray-600);}
+.basket-sum-val{font-weight:700;color:var(--dp-navy);}
+.credit-active-pill{display:inline-block;background:rgba(0,166,126,.15);color:var(--dp-green);font-size:7px;font-weight:700;padding:2px 6px;border-radius:100px;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ═══ JOURNEY DASHBOARD ═══ -->
+  <aside class="dashboard" id="dashboard">
+    <div class="dash-head">
+      <h2>🗺️ Journey Hub</h2>
+      <div class="dash-stats">
+        <div class="dash-stat"><strong>۱۲</strong>سگمنت مرچنت</div>
+        <div class="dash-stat"><strong>۴</strong>سطح کاربر</div>
+        <div class="dash-stat"><strong>۴۸</strong>ترکیب جرنی</div>
+      </div>
+    </div>
+    <div class="active-combo" id="active-combo"></div>
+    <div class="dash-section">
+      <div class="dash-label">سگمنت مرچنت</div>
+      <div class="seg-matrix" id="seg-matrix"></div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-label">نوع کاربر</div>
+      <div class="user-pills" id="user-pills"></div>
+    </div>
+    <div class="journey-path">
+      <div class="jp-title">مسیر جرنی</div>
+      <div class="jp-steps" id="jp-steps"></div>
+    </div>
+    <button class="launch-btn" onclick="launchJourney()">▶ شروع جرنی End-to-End</button>
+  </aside>
+
+  <div class="center-col">
+  <div class="main">
+    <div class="top-bar">
+      <div>
+        <h1>DigiPay — Journey Hub · L0–L3</h1>
+        <p id="top-subtitle">سگمنت ۱ · L0 · دیجی‌کالا</p>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">↺ شروع مجدد</button>
+    </div>
+    <div class="context-chip" id="context-chip" onclick="scrollToDashboard()">⚙️ <span id="context-chip-text">سگمنت ۱ · L0</span></div>
+    <div class="breadcrumb" id="breadcrumb"></div>
+
+    <div class="phone" id="phone">
+
+      <!-- ══════════════════════════════════════
+           MERCHANT — PLP → PDP → Basket
+      ══════════════════════════════════════ -->
+      <div class="merchant-scene active" id="merchant-scene">
+        <!-- PLP -->
+        <div class="m-page" id="page-plp">
+          <div class="m-topbar">
+            <div class="m-search">جستجو در دیجی‌کالا</div>
+            <div class="m-icons"><span>🔔</span><span>🛒</span></div>
+          </div>
+          <div class="m-scroll">
+            <div class="l3-debt-banner" id="l3-debt-banner">
+              <span class="dp-icon dp-icon-md"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></span>
+              <div class="l3-debt-body">
+                <div class="l3-debt-title">بدهی اعتبار اقساطی</div>
+                <div class="l3-debt-amount" id="l3-debt-amount">۳۲,۰۰۰,۰۰۰ ریال</div>
+              </div>
+              <button class="l3-debt-btn" onclick="payDebtFromPLP()">پرداخت بدهی</button>
+            </div>
+            <div class="l0-banner" id="l0-banner" onclick="openCreditFlow('plp')">
+              <div>
+                <div class="l0-banner-text">دریافت اعتبار دیجی‌پی</div>
+                <div class="l0-banner-sub">خرید اقساطی و اعتبار ماهانه</div>
+              </div>
+              <div class="l0-banner-cta">دریافت اعتبار</div>
+            </div>
+            <div class="credit-row" id="credit-row">
+              <div class="credit-card">
+                <span class="dp-icon dp-icon-sm"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></span>
+                <div class="credit-card-body">
+                  <div class="credit-card-title">اعتبار ۴ قسطه</div>
+                  <div class="credit-card-amount">۳۵۰,۰۰۰,۰۰۰ ریال</div>
+                </div>
+              </div>
+              <div class="credit-card">
+                <span class="dp-icon dp-icon-sm"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></span>
+                <div class="credit-card-body">
+                  <div class="credit-card-title">اعتبار ماهانه</div>
+                  <div class="credit-card-amount">۲۰۰,۰۰۰,۰۰۰ ریال</div>
+                </div>
+              </div>
+            </div>
+            <div class="l1-balance-scroll" id="l1-balance-scroll">
+              <div class="l1-balance-scroll-inner" id="l1-balance-inner"></div>
+            </div>
+            <div class="plp-grid" id="plp-grid"></div>
+          </div>
+        </div>
+        <!-- PDP -->
+        <div class="m-page" id="page-pdp" style="display:none;">
+          <div class="m-topbar">
+            <div class="m-back" onclick="showMerchantPage('plp')">‹</div>
+            <div style="font-size:10px;font-weight:700;color:var(--dp-navy);flex:1;">جزئیات محصول</div>
+            <div class="m-icons"><span>🔗</span><span>🛒</span></div>
+          </div>
+          <div class="m-scroll">
+            <div class="pdp-hero" id="pdp-hero"></div>
+            <div class="pdp-body">
+              <div class="pdp-title" id="pdp-title"></div>
+              <div class="dp-promo-pdp" id="pdp-promo"></div>
+              <div class="pdp-price-row"><span class="pdp-price" id="pdp-price"></span><span class="pdp-price-unit">تومان</span></div>
+              <div class="pdp-desc" id="pdp-desc"></div>
+            </div>
+          </div>
+          <div class="m-foot"><button class="m-btn red" onclick="addToCart()">افزودن به سبد خرید</button></div>
+        </div>
+        <!-- Basket -->
+        <div class="m-page" id="page-basket" style="display:none;">
+          <div class="m-topbar">
+            <div class="m-back" onclick="showMerchantPage('pdp')">‹</div>
+            <div style="font-size:10px;font-weight:700;color:var(--dp-navy);flex:1;">سبد خرید</div>
+          </div>
+          <div class="m-scroll">
+            <div class="dp-promo-basket" id="basket-promo"></div>
+            <div class="basket-item" id="basket-item"></div>
+            <div class="basket-summary">
+              <div class="basket-sum-row"><span class="basket-sum-key">جمع سبد</span><span class="basket-sum-val" id="basket-total"></span></div>
+              <div class="basket-sum-row"><span class="basket-sum-key">هزینه ارسال</span><span class="basket-sum-val" style="color:var(--dp-green);">رایگان</span></div>
+            </div>
+          </div>
+          <div class="m-foot"><button class="m-btn blue" onclick="goToCheckout()">تایید و ادامه</button></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           CHECKOUT
+      ══════════════════════════════════════ -->
+      <div class="checkout-scene" id="checkout-scene">
+        <div class="co-bg" id="co-bg">
+          <div class="fin-banner" id="fin-banner">⏳ مبلغ تخمینی — نهایی‌سازی پس از اتمام خدمت (After Checkout)</div>
+          <div class="co-blocked" id="co-blocked">🚫 حساب دیجی‌پی به دلیل بدهی مسدود است — ابتدا تسویه کنید</div>
+
+          <!-- checkout init (L0 before credit) -->
+          <div id="bg-init">
+            <div class="co-topbar"><div style="font-size:11px;font-weight:800;color:var(--dp-navy);">پرداخت ←</div><div>🎧</div></div>
+            <div class="co-title">روش پرداخت خود را انتخاب کنید</div>
+            <div class="co-price-summary" id="price-summary-init"></div>
+            <div class="co-rows co-rows-scroll">
+              <div class="co-row" style="opacity:.6;cursor:default;"><div class="radio"></div><div style="flex:1;"><div class="co-name">درگاه بانکی</div></div><span>🏦</span></div>
+              <div class="co-row clickable-credit" id="credit-row-init" onclick="onCreditRowClick()">
+                <div class="radio"></div>
+                <div style="flex:1;"><div class="co-name">خرید با دیجی‌پی</div><div class="co-sub blue">خرید اعتباری دیجی‌پی</div></div>
+                <span class="credit-cta" id="credit-get-cta">دریافت اعتبار ‹</span>
+                <span class="debt-badge" id="credit-debt-badge" style="display:none;">دارای بدهی</span>
+                <span class="credit-cta" id="credit-settle-cta" style="display:none;" onclick="event.stopPropagation();settleDebtFromCheckout()">تسویه ‹</span>
+                <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+              </div>
+              <div class="pay-wrap" id="wallet-wrap-init">
+                <div class="co-row" id="wallet-row" onclick="selectWallet(event)">
+                  <div class="radio" id="wallet-radio"></div>
+                  <div style="flex:1;"><div class="co-name">خرید با کیف پول دیجی‌پی</div><div class="co-sub green">پرداخت آنی از کیف پول</div></div>
+                  <span class="cashback-badge">تا ۵٪ کش‌بک</span>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail green-bg" id="detail-wallet-init" style="display:none;">
+                  <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="wallet-diff-init-val">—</span></div>
+                  <div class="inst-note" id="wallet-diff-init-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
+                </div>
+              </div>
+              <div class="co-row" style="opacity:.6;cursor:default;"><div class="radio"></div><div style="flex:1;"><div class="co-name">اسنپ پی</div></div><div style="background:#5B2D8E;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:900;">اپ</div></div>
+            </div>
+            <div class="co-foot-sticky">
+              <div class="discount-box" id="discount-box-init">
+                <div class="discount-row">
+                  <input class="discount-input" id="discount-input-init" placeholder="کد تخفیف">
+                  <button class="discount-btn" onclick="applyDiscount()">ثبت</button>
+                </div>
+                <div class="discount-applied" id="discount-msg-init"></div>
+              </div>
+              <button class="pay-btn" id="pay-btn-init" disabled onclick="payWallet()">پرداخت ۱۲۰,۰۰۰,۰۰۰ ریال</button>
+            </div>
+          </div>
+
+          <!-- checkout allocated — L0 post-credit / L1 -->
+          <div id="bg-allocated" style="display:none;">
+            <div class="co-topbar"><div style="font-size:11px;font-weight:800;color:var(--dp-navy);">پرداخت ←</div></div>
+            <div class="co-title">روش پرداخت خود را انتخاب کنید</div>
+            <div class="co-price-summary" id="price-summary-allocated"></div>
+            <div class="co-rows co-rows-scroll">
+              <div class="co-row" style="opacity:.6;cursor:default;"><div class="radio"></div><div style="flex:1;"><div class="co-name">درگاه بانکی</div></div><span>🏦</span></div>
+
+              <!-- Wallet -->
+              <div class="pay-block" id="block-wallet" onclick="selectPayMethod('wallet')">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio" id="radio-wallet"></div>
+                  <div style="flex:1;"><div class="co-name">خرید با کیف پول دیجی‌پی</div><div class="co-sub green" id="wallet-balance-sub">موجودی: ۵۵,۰۰۰,۰۰۰ تومان</div></div>
+                  <span class="balance-ok-badge" id="badge-wallet" style="display:none;">کافی</span>
+                  <span class="cashback-badge">تا ۵٪ کش‌بک</span>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail green-bg" id="detail-wallet" style="display:none;">
+                  <div class="inst-row"><span class="inst-label">موجودی کیف پول</span><span class="inst-val" id="wallet-bal-val">—</span></div>
+                  <div class="inst-row" id="wallet-diff-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="wallet-diff-val">—</span></div>
+                  <div class="inst-row" id="wallet-sufficient-row" style="display:none;"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
+                  <div class="inst-note" id="wallet-diff-note">—</div>
+                </div>
+              </div>
+
+              <!-- Monthly credit -->
+              <div class="pay-block" id="block-monthly" onclick="selectPayMethod('monthly')">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio" id="radio-monthly"></div>
+                  <div style="flex:1;"><div class="co-name">دیجی‌پی اعتبار ماهانه</div><div class="co-sub green" id="monthly-balance-sub">موجودی: ۲۰,۰۰۰,۰۰۰ تومان</div></div>
+                  <span class="balance-ok-badge" id="badge-monthly" style="display:none;">کافی</span>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail green-bg" id="detail-monthly" style="display:none;">
+                  <div class="inst-row"><span class="inst-label">موجودی اعتبار ماهانه</span><span class="inst-val" id="monthly-bal-val">—</span></div>
+                  <div class="inst-row" id="monthly-diff-row" style="display:none;"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="monthly-diff-val">—</span></div>
+                  <div class="inst-row" id="monthly-sufficient-row" style="display:none;"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
+                  <div class="inst-row"><span class="inst-label">میزان کارمزد</span><span style="font-weight:700;color:var(--dp-green);">بدون کارمزد</span></div>
+                  <div class="inst-row"><span class="inst-label">زمان سررسید</span><span class="inst-val">یکم ماه بعد</span></div>
+                  <div class="inst-note" id="monthly-detail-note">بدون پیش‌پرداخت — تسویه یکم ماه بعد</div>
+                </div>
+              </div>
+
+              <!-- 4-pay credit -->
+              <div class="pay-block" id="block-4pay" onclick="selectPayMethod('4pay')">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio" id="radio-4pay"></div>
+                  <div style="flex:1;"><div class="co-name">دیجی‌پی پرداخت در ۴ قسط</div><div class="co-sub" id="fourpay-balance-sub">موجودی: ۳۵,۰۰۰,۰۰۰ تومان</div></div>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail" id="detail-4pay" style="display:none;">
+                  <div id="detail-4pay-rows"></div>
+                  <div class="inst-note">بدون سود و کارمزد — قسط اول امروز از درگاه</div>
+                </div>
+              </div>
+
+              <div class="block-loans" id="block-loans-wrap">
+              <!-- Loan Tejarat -->
+              <div class="pay-block" id="block-loan-tejarat" onclick="selectPayMethod('loan-tejarat')">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio" id="radio-loan-tejarat"></div>
+                  <div style="flex:1;"><div class="co-name">وام تجارت</div><div class="co-sub" style="color:#8a6200;" id="loan-tejarat-balance-sub">مانده: ۵۰,۰۰۰,۰۰۰ تومان</div></div>
+                  <span class="balance-ok-badge" id="badge-loan-tejarat" style="display:none;">کافی</span>
+                  <span style="font-size:14px;">🏦</span>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail green-bg" id="detail-loan-tejarat" style="display:none;">
+                  <div class="inst-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-tejarat-bal-val">—</span></div>
+                  <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="loan-tejarat-diff-val">—</span></div>
+                  <div class="inst-note" id="loan-tejarat-diff-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
+                </div>
+              </div>
+
+              <!-- Loan Mellat -->
+              <div class="pay-block" id="block-loan-mellat" onclick="selectPayMethod('loan-mellat')">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio" id="radio-loan-mellat"></div>
+                  <div style="flex:1;"><div class="co-name">وام ملت</div><div class="co-sub" style="color:#8a6200;" id="loan-mellat-balance-sub">مانده: ۳۰,۰۰۰,۰۰۰ تومان</div></div>
+                  <span class="balance-ok-badge" id="badge-loan-mellat" style="display:none;">کافی</span>
+                  <span style="font-size:14px;">🏛️</span>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                </div>
+                <div class="inst-detail green-bg" id="detail-loan-mellat" style="display:none;">
+                  <div class="inst-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-mellat-bal-val">—</span></div>
+                  <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="loan-mellat-diff-val">—</span></div>
+                  <div class="inst-note" id="loan-mellat-diff-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
+                </div>
+              </div>
+              </div><!-- block-loans -->
+            </div>
+            <div class="co-foot-sticky">
+              <div class="discount-box" id="discount-box-allocated">
+                <div class="discount-row">
+                  <input class="discount-input" id="discount-input-allocated" placeholder="کد تخفیف">
+                  <button class="discount-btn" onclick="applyDiscount()">ثبت</button>
+                </div>
+                <div class="discount-applied" id="discount-msg-allocated"></div>
+              </div>
+              <button class="pay-btn" id="pay-btn-allocated" disabled onclick="payAllocated()">پرداخت ۱۲۰,۰۰۰,۰۰۰ ریال</button>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- checkout-scene -->
+
+      <div class="sheet-overlay" onclick="closeSheet()"></div>
+      <div class="bottom-sheet" id="bottom-sheet">
+          <div class="sheet-handle-row"><div class="sheet-handle"></div></div>
+
+          <!-- KYC -->
+          <div class="sheet-panel" id="panel-kyc">
+            <div class="sheet-header">
+              <div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>دریافت اعتبار اقساطی</div>
+              <button class="sheet-close" onclick="closeSheet()">✕</button>
+            </div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:12px;">
+                <div class="kyc-circle">🪪</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">اطلاعات خود را وارد کنید</div>
+                <div style="font-size:9px;color:var(--gray-500);margin-top:3px;">برای تأیید هویت و دریافت اعتبار</div>
+              </div>
+              <div class="input-lbl">کد ملی *</div><div class="input-f">۰۰۱۸۴۰۵۶۷۲</div>
+              <div class="input-lbl">تاریخ تولد *</div><div class="input-f" style="color:var(--gray-400);">📅 ۱۳۷۴/۱۰/۱۸</div>
+              <button class="sheet-btn navy" onclick="openSheet('loading1')">تأیید و ادامه</button>
+            </div>
+          </div>
+
+          <!-- Loading 1 — auto → OTP -->
+          <div class="sheet-panel" id="panel-loading1">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>دریافت اعتبار</div></div>
+            <div class="sheet-body">
+              <div class="spin-wrap"><div class="spin-circle">🔍<div class="spin-ring"></div></div><div class="spin-title">در حال بررسی...</div></div>
+              <ul class="check-list" id="check-list-1"><li><div class="ci loading"></div>بررسی اطلاعات هویتی</li><li><div class="ci pend">○</div>اعتبارسنجی</li><li><div class="ci pend">○</div>فعال‌سازی اعتبار</li></ul>
+            </div>
+          </div>
+
+          <!-- OTP credit -->
+          <div class="sheet-panel" id="panel-otp-credit">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>تأیید پیامک</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:10px;">
+                <div style="font-size:32px;margin-bottom:6px;">📲</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">کد پیامک را وارد کنید</div>
+                <div style="font-size:9px;color:var(--gray-500);">۰۹۱۲۸۸۹۹۶۵۶</div>
+              </div>
+              <div class="otp-boxes"><div class="otp-box fil">۷</div><div class="otp-box fil">۷</div><div class="otp-box fil">۷</div><div class="otp-box act"></div><div class="otp-box"></div><div class="otp-box"></div></div>
+              <button class="sheet-btn navy" onclick="openSheet('loading2')">تأیید و ادامه</button>
+            </div>
+          </div>
+
+          <!-- Loading 2 — auto → credit result -->
+          <div class="sheet-panel" id="panel-loading2">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>اعتبارسنجی</div></div>
+            <div class="sheet-body">
+              <div class="spin-wrap"><div class="spin-circle">⏱️<div class="spin-ring"></div></div><div class="spin-title">در حال بررسی...</div></div>
+              <ul class="check-list" id="check-list-2"><li><div class="ci done">✓</div>بررسی اطلاعات هویتی</li><li><div class="ci loading"></div>اعتبارسنجی</li><li><div class="ci pend">○</div>فعال‌سازی اعتبار</li></ul>
+            </div>
+          </div>
+
+          <!-- Credit activated — both credits -->
+          <div class="sheet-panel" id="panel-credit-result">
+            <div class="sheet-header">
+              <div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>اعتبار فعال شد 🎉</div>
+              <button class="sheet-close" onclick="closeSheet()">✕</button>
+            </div>
+            <div class="sheet-body">
+              <div style="text-align:center;font-size:28px;margin-bottom:8px;">🎊</div>
+              <div class="rc four">
+                <div class="rc-head"><div class="rc-title">اعتبار ۴ قسطه</div><span class="rc-tag purple">بدون سود و کارمزد</span></div>
+                <div class="rc-row"><span class="rc-key">موجودی</span><span class="rc-val">۳۵,۰۰۰,۰۰۰ تومان</span></div>
+                <div class="inst-mini">
+                  <div class="inst-mini-row"><span style="font-weight:700;color:var(--dp-navy);">قسط اول — امروز</span><span style="font-weight:800;direction:ltr;">۴,۶۲۵,۰۰۰ ت</span></div>
+                  <div class="inst-mini-row"><span style="color:var(--gray-600);">قسط دوم — ۱ تیر</span><span style="direction:ltr;">۴,۶۲۵,۰۰۰ ت</span></div>
+                  <div class="inst-mini-row"><span style="color:var(--gray-600);">قسط سوم — ۱ مرداد</span><span style="direction:ltr;">۴,۶۲۵,۰۰۰ ت</span></div>
+                  <div class="inst-mini-row"><span style="color:var(--gray-600);">قسط چهارم — ۱ شهریور</span><span style="direction:ltr;">۴,۶۲۵,۰۰۰ ت</span></div>
+                </div>
+              </div>
+              <div class="rc monthly">
+                <div class="rc-head"><div class="rc-title">اعتبار ماهانه</div><span class="rc-tag teal">بدون کارمزد</span></div>
+                <div class="rc-row"><span class="rc-key">موجودی</span><span class="rc-val">۲۰,۰۰۰,۰۰۰ تومان</span></div>
+                <div class="rc-row"><span class="rc-key">سررسید</span><span class="rc-val">یکم ماه بعد</span></div>
+              </div>
+              <button class="sheet-btn green" onclick="creditResultContinue()">ادامه خرید با اعتبار</button>
+            </div>
+          </div>
+
+          <!-- OTP payment credit -->
+          <div class="sheet-panel" id="panel-otp-payment">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>تأیید پرداخت</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:10px;">
+                <div style="font-size:32px;margin-bottom:6px;">💬</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">کد پیامک را وارد کنید</div>
+                <div style="font-size:9px;color:var(--gray-500);">پین ❌ · اپ ❌ → OTP مستقیم</div>
+              </div>
+              <div class="otp-boxes"><div class="otp-box fil">۷</div><div class="otp-box fil">۷</div><div class="otp-box fil">۷</div><div class="otp-box act"></div><div class="otp-box"></div><div class="otp-box"></div></div>
+              <button class="sheet-btn navy" onclick="startRedirect()">تأیید و ادامه</button>
+            </div>
+          </div>
+
+          <!-- OTP wallet -->
+          <div class="sheet-panel" id="panel-otp-wallet">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>تأیید پرداخت</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:10px;">
+                <div style="font-size:32px;margin-bottom:6px;">💬</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">کد پیامک را وارد کنید</div>
+                <div style="font-size:9px;color:var(--gray-500);">۰۹۱۲۸۸۹۹۶۵۶</div>
+              </div>
+              <div class="otp-boxes"><div class="otp-box fil">۴</div><div class="otp-box fil">۸</div><div class="otp-box fil">۲</div><div class="otp-box act"></div><div class="otp-box"></div><div class="otp-box"></div></div>
+              <button class="sheet-btn navy" onclick="startRedirect()">تأیید و ادامه</button>
+            </div>
+          </div>
+
+          <!-- Redirect loading -->
+          <div class="sheet-panel" id="panel-redirect">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>انتقال به درگاه</div></div>
+            <div class="sheet-body" style="text-align:center;">
+              <div style="font-size:36px;margin-bottom:8px;">✅</div>
+              <div style="font-size:14px;font-weight:800;color:var(--dp-green);margin-bottom:6px;">احراز هویت موفق</div>
+              <div style="font-size:10px;color:var(--gray-500);margin-bottom:12px;">در حال انتقال به درگاه پرداخت...</div>
+              <div class="spin-wrap" style="padding:0;"><div class="spin-circle">💳<div class="spin-ring"></div></div></div>
+              <div class="redirect-badge">→ sep.shaparak.ir</div>
+            </div>
+          </div>
+
+          <!-- Auth method choice (L1) -->
+          <div class="sheet-panel" id="panel-auth-choice">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>تأیید هویت</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="font-size:9px;color:var(--gray-500);margin-bottom:10px;text-align:center;">روش تأیید پرداخت را انتخاب کنید</div>
+              <div class="auth-opt" onclick="openSheet('pin')">
+                <span class="auth-opt-icon">🔐</span>
+                <div class="auth-opt-text"><div class="auth-opt-title">رمز / اثرانگشت دیجی‌پی</div><div class="auth-opt-sub">PIN یا بایومتریک تعریف‌شده</div></div>
+              </div>
+              <div class="auth-opt" onclick="openDigipayApp()">
+                <span class="auth-opt-icon">📱</span>
+                <div class="auth-opt-text"><div class="auth-opt-title">تأیید با اپ دیجی‌پی</div><div class="auth-opt-sub">رمز را فراموش کردید؟ در اپ تأیید کنید</div></div>
+              </div>
+              <div class="auth-opt" onclick="openOtpFromAuthChoice()">
+                <span class="auth-opt-icon">💬</span>
+                <div class="auth-opt-text"><div class="auth-opt-title">رمز یکبار مصرف (OTP)</div><div class="auth-opt-sub">ارسال کد پیامکی</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- App confirm mock (L1) -->
+          <div class="sheet-panel" id="panel-app-confirm">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>اپ دیجی‌پی</div></div>
+            <div class="sheet-body">
+              <div class="app-confirm-mock">
+                <div class="app-logo">📲</div>
+                <div style="font-size:11px;font-weight:800;margin-bottom:4px;">تأیید خرید در اپ دیجی‌پی</div>
+                <div style="font-size:8px;opacity:.75;">مبلغ سفارش · دیجی‌کالا</div>
+              </div>
+              <div style="font-size:9px;color:var(--gray-500);text-align:center;margin-bottom:10px;">پس از تأیید، به اپ مرچنت برمی‌گردید</div>
+              <button class="sheet-btn green" onclick="afterAppConfirm()">✓ تأیید در اپ</button>
+            </div>
+          </div>
+
+          <!-- PIN auth (L1/L2) -->
+          <div class="sheet-panel" id="panel-pin">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>رمز دیجی‌پی</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:8px;">
+                <div style="font-size:32px;margin-bottom:6px;">🔐</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">رمز ۴ رقمی دیجی‌پی</div>
+                <div style="font-size:9px;color:var(--gray-500);">یا اثرانگشت / Face ID</div>
+              </div>
+              <div class="pin-dots"><div class="pin-dot fil"></div><div class="pin-dot fil"></div><div class="pin-dot fil"></div><div class="pin-dot"></div></div>
+              <button class="sheet-btn navy" onclick="afterAuthSuccess()">تأیید</button>
+              <button class="sheet-btn blue" style="margin-top:6px;background:var(--gray-100);color:var(--dp-navy);" onclick="openSheet('auth-choice')">سایر روش‌های تأیید</button>
+            </div>
+          </div>
+
+          <!-- Debt settlement (L3) -->
+          <div class="sheet-panel" id="panel-debt">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>تسویه بدهی</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:10px;">
+                <div style="font-size:32px;margin-bottom:6px;">⚠️</div>
+                <div style="font-size:13px;font-weight:800;color:var(--red);">حساب به دلیل بدهی مسدود است</div>
+                <div style="font-size:9px;color:var(--gray-500);margin-top:4px;">کاربر L3 — پرداخت تا تسویه ممکن نیست</div>
+              </div>
+              <div class="rc monthly">
+                <div class="rc-row"><span class="rc-key">بدهی معوق</span><span class="rc-val">۳,۲۰۰,۰۰۰ تومان</span></div>
+                <div class="rc-row"><span class="rc-key">۲ قسط معوق</span><span class="rc-val">۱,۶۰۰,۰۰۰ × ۲</span></div>
+              </div>
+              <button class="sheet-btn green" onclick="settleDebt()">تسویه بدهی و ادامه</button>
+            </div>
+          </div>
+
+          <!-- Insufficient balance (L2) -->
+          <div class="sheet-panel" id="panel-insufficient">
+            <div class="sheet-header"><div class="sheet-header-title"><div class="sheet-logo"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>مانده ناکافی</div><button class="sheet-close" onclick="closeSheet()">✕</button></div>
+            <div class="sheet-body">
+              <div style="text-align:center;margin-bottom:10px;">
+                <div style="font-size:32px;margin-bottom:6px;">💳</div>
+                <div style="font-size:13px;font-weight:800;color:var(--dp-navy);">مانده کافی نیست</div>
+                <div style="font-size:9px;color:var(--gray-500);">کاربر L2 — نیاز به شارژ یا Uplift</div>
+              </div>
+              <div class="rc four">
+                <div class="rc-row"><span class="rc-key">مانده کیف پول</span><span class="rc-val">۲,۰۰۰,۰۰۰ تومان</span></div>
+                <div class="rc-row"><span class="rc-key">مبلغ سفارش</span><span class="rc-val">۴۸,۸۶۴,۰۰۰ تومان</span></div>
+                <div class="rc-row"><span class="rc-key">کسری</span><span class="rc-val" style="color:var(--red);">۴۶,۸۶۴,۰۰۰ تومان</span></div>
+              </div>
+              <button class="sheet-btn blue" onclick="closeSheet(false);openSheet('pin');">شارژ + PIN → SEP</button>
+              <button class="sheet-btn navy" style="margin-top:6px;background:var(--gray-600);" onclick="closeSheet()">انصراف</button>
+            </div>
+          </div>
+
+        </div><!-- bottom-sheet -->
+
+      <!-- ══════════════════════════════════════
+           FULL PAGE — SEP + Thank You only
+      ══════════════════════════════════════ -->
+
+      <!-- DigiPay App — purchase confirm -->
+      <div class="fp-screen" id="fp-digipay-app">
+        <div class="fp-label">اپ دیجی‌پی — تأیید خرید</div>
+        <div class="dp-app">
+          <div class="dp-app-bar"><span>9:41</span><span>📶 🔋</span></div>
+          <div class="dp-app-hd"><img src="assets/digipay-logo.png" alt=""><span>دیجی‌پی</span></div>
+          <div class="dp-app-body"><div class="dp-app-card"></div><div class="dp-app-card"></div><div class="dp-app-card"></div></div>
+          <div class="dp-app-notif-overlay">
+            <div class="dp-app-notif">
+              <div class="dp-app-notif-hd">
+                <img src="assets/digipay-logo.png" alt="">
+                <div><div class="notif-title">تأیید خرید</div><div class="notif-sub" id="dp-app-merchant">دیجی‌کالا</div></div>
+              </div>
+              <div class="notif-amount" id="dp-app-amount">—</div>
+              <div class="notif-actions">
+                <button class="notif-cancel" onclick="onDigipayAppCancel()">انصراف</button>
+                <button class="notif-confirm" onclick="onDigipayAppConfirm()">تأیید</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Redirect to gateway -->
+      <div class="fp-screen" id="fp-redirect">
+        <div class="fp-label">انتقال به درگاه</div>
+        <div class="fp-redirect-page">
+          <div style="font-size:36px;margin-bottom:8px;">✅</div>
+          <div style="font-size:14px;font-weight:800;color:var(--dp-green);margin-bottom:6px;">احراز هویت موفق</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-bottom:14px;">در حال انتقال به درگاه پرداخت...</div>
+          <div class="spin-wrap" style="padding:0;"><div class="spin-circle">💳<div class="spin-ring"></div></div></div>
+          <div class="redirect-badge" style="margin-top:12px;">→ sep.shaparak.ir</div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-sep-credit">
+        <div class="fp-label">FULL PAGE — ریدایرکت خارجی</div>
+        <div class="sep-gw">
+          <div class="sep-url-bar">🔒 sep.shaparak.ir/payment/...</div>
+          <div class="sep-header"><div class="sep-logo"><div class="sep-logo-icon">SEP</div></div><h1>درگاه پرداخت اینترنتی سپ</h1></div>
+          <div class="sep-info">
+            <div class="sep-info-row"><div class="sep-info-icon">🏪</div><div><div class="sep-info-label">پذیرنده</div><div class="sep-info-val">دیجی‌کالا</div></div></div>
+            <div class="sep-info-row"><div class="sep-info-icon">💵</div><div><div class="sep-info-label">مبلغ — پیش‌قسط</div><div class="sep-info-val big" id="sep-credit-amount">۲۵,۰۰۰,۰۰۰ ریال</div><div class="sep-info-val words" id="sep-credit-words">—</div></div></div>
+          </div>
+          <div class="sep-form">
+            <div class="sep-field"><div class="sep-field-lbl">CVV2</div><div class="sep-input">CVV2</div></div>
+            <div class="sep-field"><div class="sep-field-lbl">تاریخ انقضا</div><div class="sep-expiry"><div class="sep-input">ماه</div><div class="sep-input">سال</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">کد امنیتی</div><div class="sep-captcha"><div class="sep-captcha-img">50032</div><div class="sep-input" style="flex:1;">کد امنیتی</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">رمز پویا</div><div class="sep-dynamic"><div class="sep-input">رمز دوم/پویا</div><button class="sep-dynamic-btn">دریافت رمز پویا</button></div></div>
+            <div class="sep-pay-btn" id="sep-credit-btn" onclick="goThankYou()">پرداخت</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-sep-wallet">
+        <div class="fp-label">FULL PAGE — ریدایرکت خارجی</div>
+        <div class="sep-gw">
+          <div class="sep-url-bar">🔒 sep.shaparak.ir/payment/...</div>
+          <div class="sep-header"><div class="sep-logo"><div class="sep-logo-icon">SEP</div></div><h1>درگاه پرداخت اینترنتی سپ</h1></div>
+          <div class="sep-info">
+            <div class="sep-info-row"><div class="sep-info-icon">🏪</div><div><div class="sep-info-label">پذیرنده</div><div class="sep-info-val">دیجی‌کالا</div></div></div>
+            <div class="sep-info-row"><div class="sep-info-icon">💵</div><div><div class="sep-info-label">مبلغ — کل سفارش</div><div class="sep-info-val big" id="sep-wallet-amount">۱۲۰,۰۰۰,۰۰۰ ریال</div><div class="sep-info-val words" id="sep-wallet-words">—</div></div></div>
+          </div>
+          <div class="sep-form">
+            <div class="sep-field"><div class="sep-field-lbl">CVV2</div><div class="sep-input">CVV2</div></div>
+            <div class="sep-field"><div class="sep-field-lbl">تاریخ انقضا</div><div class="sep-expiry"><div class="sep-input">ماه</div><div class="sep-input">سال</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">کد امنیتی</div><div class="sep-captcha"><div class="sep-captcha-img">73891</div><div class="sep-input" style="flex:1;">کد امنیتی</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">رمز پویا</div><div class="sep-dynamic"><div class="sep-input">رمز دوم/پویا</div><button class="sep-dynamic-btn">دریافت رمز پویا</button></div></div>
+            <div class="sep-pay-btn" id="sep-wallet-btn" onclick="goThankYou()">پرداخت</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-sep-debt">
+        <div class="fp-label">FULL PAGE — تسویه بدهی</div>
+        <div class="sep-gw">
+          <div class="sep-url-bar">🔒 sep.shaparak.ir/payment/...</div>
+          <div class="sep-header"><div class="sep-logo"><div class="sep-logo-icon">SEP</div></div><h1>درگاه پرداخت اینترنتی سپ</h1></div>
+          <div class="sep-info">
+            <div class="sep-info-row"><div class="sep-info-icon">🏪</div><div><div class="sep-info-label">پذیرنده</div><div class="sep-info-val">دیجی‌پی — تسویه بدهی</div></div></div>
+            <div class="sep-info-row"><div class="sep-info-icon">💵</div><div><div class="sep-info-label">مبلغ بدهی</div><div class="sep-info-val big" id="sep-debt-amount">۳۲,۰۰۰,۰۰۰ ریال</div><div class="sep-info-val words" id="sep-debt-words">۳,۲۰۰,۰۰۰ تومان — بدهی اعتبار اقساطی</div></div></div>
+          </div>
+          <div class="sep-form">
+            <div class="sep-field"><div class="sep-field-lbl">CVV2</div><div class="sep-input">CVV2</div></div>
+            <div class="sep-field"><div class="sep-field-lbl">تاریخ انقضا</div><div class="sep-expiry"><div class="sep-input">ماه</div><div class="sep-input">سال</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">کد امنیتی</div><div class="sep-captcha"><div class="sep-captcha-img">28491</div><div class="sep-input" style="flex:1;">کد امنیتی</div></div></div>
+            <div class="sep-field"><div class="sep-field-lbl">رمز پویا</div><div class="sep-dynamic"><div class="sep-input">رمز دوم/پویا</div><button class="sep-dynamic-btn">دریافت رمز پویا</button></div></div>
+            <div class="sep-pay-btn" onclick="completeDebtPayment()">پرداخت بدهی</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-thankyou">
+        <div class="fp-label">FULL PAGE — بازگشت مرچنت</div>
+        <div class="ty-page">
+          <div class="ty-top"><div style="font-size:10px;font-weight:800;color:var(--dp-navy);" id="ty-merchant-name">دیجی‌کالا</div><div style="font-size:10px;color:var(--gray-500);">تأیید سفارش</div></div>
+          <div class="ty-body">
+            <div class="ty-check">✅</div>
+            <div class="ty-title">سفارش شما با موفقیت ثبت گردید.</div>
+            <div class="ty-order" id="ty-order-num">شماره سفارش ۱۱۵۶۸۱۷۲۲۸</div>
+            <div class="ty-card">
+              <div class="ty-row"><span class="ty-key">روش پرداخت</span><span class="ty-val" id="ty-pay-method">—</span></div>
+              <div id="ty-extra-rows"></div>
+              <div class="ty-row"><span class="ty-key">مبلغ</span><span class="ty-val" id="ty-amount">—</span></div>
+              <div class="ty-row"><span class="ty-key">وضعیت</span><span class="ty-val" style="color:var(--dp-green);">موفق ✓</span></div>
+            </div>
+            <div class="ty-after-note" style="display:none;width:100%;background:#FFF8EC;border:1px solid #F5D78E;border-radius:8px;padding:8px 10px;font-size:8px;color:#8a6200;margin-bottom:8px;text-align:center;">⏳ مبلغ نهایی پس از اتمام خدمت محاسبه و ارسال می‌شود</div>
+            <div class="ty-install" id="ty-install-block"><h4>📱 اپ دیجی‌پی رو نصب کن</h4><p id="ty-install-desc">برای پرداخت اقساط بعدی</p><button class="ty-install-btn">دانلود اپ</button></div>
+            <button class="reset-btn" onclick="resetAll()" style="margin-top:14px;background:var(--gray-100);border:none;color:var(--dp-navy);">شروع مجدد</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- legacy screens kept hidden for compat -->
+      <div class="fp-screen" id="fp-thankyou-credit" style="display:none!important;">
+        <div class="fp-label">FULL PAGE — بازگشت مرچنت</div>
+        <div class="ty-page">
+          <div class="ty-top"><div style="font-size:10px;font-weight:800;color:var(--dp-navy);">دیجی‌کالا</div><div style="font-size:10px;color:var(--gray-500);">تأیید سفارش</div></div>
+          <div class="ty-body">
+            <div class="ty-check">✅</div>
+            <div class="ty-title">سفارش شما با موفقیت ثبت گردید.</div>
+            <div class="ty-order">شماره سفارش ۱۱۵۶۸۱۷۲۲۸</div>
+            <div class="ty-card"><div class="ty-row"><span class="ty-key">روش پرداخت</span><span class="ty-val">اعتبار ۴ قسطه</span></div><div class="ty-row"><span class="ty-key">وضعیت</span><span class="ty-val" style="color:var(--dp-green);">موفق ✓</span></div></div>
+            <div class="ty-after-note" style="display:none;width:100%;background:#FFF8EC;border:1px solid #F5D78E;border-radius:8px;padding:8px 10px;font-size:8px;color:#8a6200;margin-bottom:8px;text-align:center;">⏳ مبلغ نهایی پس از اتمام خدمت محاسبه و ارسال می‌شود</div>
+            <div class="ty-install"><h4>📱 اپ دیجی‌پی رو نصب کن</h4><p>برای پرداخت اقساط بعدی</p><button class="ty-install-btn">دانلود اپ</button></div>
+            <button class="reset-btn" onclick="resetAll()" style="margin-top:14px;background:var(--gray-100);border:none;color:var(--dp-navy);">شروع مجدد</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-thankyou-monthly">
+        <div class="fp-label">FULL PAGE — بازگشت مرچنت</div>
+        <div class="ty-page">
+          <div class="ty-top"><div style="font-size:10px;font-weight:800;color:var(--dp-navy);">دیجی‌کالا</div><div style="font-size:10px;color:var(--gray-500);">تأیید سفارش</div></div>
+          <div class="ty-body">
+            <div class="ty-check">✅</div>
+            <div class="ty-title">سفارش شما با موفقیت ثبت گردید.</div>
+            <div class="ty-order">شماره سفارش ۱۱۵۶۸۱۷۲۳۰</div>
+            <div class="ty-card">
+              <div class="ty-row"><span class="ty-key">روش پرداخت</span><span class="ty-val">اعتبار ماهانه دیجی‌پی</span></div>
+              <div class="ty-row"><span class="ty-key">سررسید</span><span class="ty-val">یکم ماه بعد</span></div>
+              <div class="ty-row"><span class="ty-key">وضعیت</span><span class="ty-val" style="color:var(--dp-green);">موفق ✓</span></div>
+            </div>
+            <div class="ty-after-note" style="display:none;width:100%;background:#FFF8EC;border:1px solid #F5D78E;border-radius:8px;padding:8px 10px;font-size:8px;color:#8a6200;margin-bottom:8px;text-align:center;">⏳ مبلغ نهایی پس از اتمام خدمت محاسبه می‌شود</div>
+            <div class="ty-install"><h4>📱 اپ دیجی‌پی رو نصب کن</h4><p>برای تسویه و مدیریت اعتبار ماهانه</p><button class="ty-install-btn">دانلود اپ</button></div>
+            <button class="reset-btn" onclick="resetAll()" style="margin-top:14px;background:var(--gray-100);border:none;color:var(--dp-navy);">شروع مجدد</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fp-screen" id="fp-thankyou-wallet">
+        <div class="fp-label">FULL PAGE — بازگشت مرچنت</div>
+        <div class="ty-page">
+          <div class="ty-top"><div style="font-size:10px;font-weight:800;color:var(--dp-navy);">دیجی‌کالا</div><div style="font-size:10px;color:var(--gray-500);">تأیید سفارش</div></div>
+          <div class="ty-body">
+            <div class="ty-check">✅</div>
+            <div class="ty-title">سفارش شما با موفقیت ثبت گردید.</div>
+            <div class="ty-order">شماره سفارش ۱۱۵۶۸۱۷۲۲۹</div>
+            <div class="ty-card"><div class="ty-row"><span class="ty-key">روش پرداخت</span><span class="ty-val">کیف پول دیجی‌پی</span></div><div class="ty-row"><span class="ty-key">کش‌بک</span><span class="ty-val" style="color:var(--dp-green);">۲,۷۴۵,۰۰۰ تومان هدیه به کیف پول دیجی‌پی ✓</span></div></div>
+            <div class="ty-after-note" style="display:none;width:100%;background:#FFF8EC;border:1px solid #F5D78E;border-radius:8px;padding:8px 10px;font-size:8px;color:#8a6200;margin-bottom:8px;text-align:center;">⏳ مبلغ نهایی پس از اتمام خدمت محاسبه می‌شود</div>
+            <button class="reset-btn" onclick="resetAll()" style="margin-top:14px;background:var(--gray-100);border:none;color:var(--dp-navy);">شروع مجدد</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hint-bar" id="hint">سگمنت و کاربر را انتخاب کن — سپس «شروع جرنی»</div>
+  </div>
+  </div><!-- center-col -->
+
+  <div class="sidebar">
+    <h2>📝 نوت‌های طراحی</h2>
+
+    <div class="note-block">
+      <h3>این فایل — هاب کامل</h3>
+      <p>L0 · L1 · L2 · L3 — سگمنت ۱ (دیجی‌کالا) تأیید شده + جرنی L3 بدهکار.</p>
+      <p>فایل قبلی L0/L1/L2: <span class="hl">digipay-segment-1-l0-credit-payment-prototype.html</span></p>
+    </div>
+    <div class="note-block">
+      <h3>راهنما</h3>
+      <p>از <span class="hl">Journey Hub</span> سمت راست، سگمنت مرچنت و سطح کاربر را انتخاب کن و «شروع جرنی» بزن.</p>
+    </div>
+    <div class="note-block">
+      <h3>L3 — بدهکار</h3>
+      <p>PLP: بنر بدهی + بدون پرومو — پرداخت بدهی → L1. بدون تسویه: PDP/سبد بدون پرومو — چک‌اوت فقط اعتبار + بج «دارای بدهی» + تسویه → L1.</p>
+    </div>
+    <div class="note-block">
+      <h3>L2 — مانده ناکافی</h3>
+      <p>PLP/PDP/Basket مشابه L1 — در چک‌اوت <span class="hl">مابه‌التفاوت</span> برای همه روش‌ها → auth → درگاه → رسید.</p>
+    </div>
+    <div class="note-block">
+      <h3>PLP — L0</h3>
+      <p>پروموشن ماهانه، ۴قسط (سبد÷۴)، کیف پول (کش‌بک تا ۵٪). دریافت اعتبار از بنر بالا.</p>
+    </div>
+    <div class="note-block">
+      <h3>Checkout</h3>
+      <p>مبلغ ≤ اعتبار → تک‌قسطه بدون Uplift. زیر Threshold → بدون OTP/ویجت.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentSheet = null;
+let walletSelected = false;
+let creditAllocated = false;
+let selectedPayMethod = null;
+let paymentMode = null;
+let confirmedPayMethod = null;
+let autoTimer = null;
+let checkoutVariant = 'init';
+let merchantPage = 'plp';
+let creditFlowSource = 'plp';
+let cartPromo = null;
+let selectedProduct = null;
+let activeSegmentId = 's01';
+let activeUserLevel = 'L0';
+let journeyConfig = null;
+let debtSettled = false;
+let debtPayReturnTo = 'plp';
+let journeyStarted = false;
+let discountApplied = false;
+let discountCode = '';
+
+const BALANCES = {
+  fourpay: '۳۵۰,۰۰۰,۰۰۰ ریال',
+  monthly: '۲۰۰,۰۰۰,۰۰۰ ریال',
+  wallet: '۵۵۰,۰۰۰,۰۰۰ ریال',
+  loanTejarat: '۵۰۰,۰۰۰,۰۰۰ ریال',
+  loanMellat: '۳۰۰,۰۰۰,۰۰۰ ریال',
+};
+const BALANCE_TOMANS = {
+  wallet: 55000000,
+  monthly: 20000000,
+  '4pay': 35000000,
+  'loan-tejarat': 50000000,
+  'loan-mellat': 30000000,
+};
+const L2_BALANCE_TOMANS = {
+  wallet: 5000000,
+  monthly: 8000000,
+  '4pay': 15000000,
+  'loan-tejarat': 5000000,
+  'loan-mellat': 3000000,
+};
+const VALID_DISCOUNT = 'DIGI1403';
+const DISCOUNT_PERCENT = 10;
+const DEBT_TOMANS = 3200000;
+
+const PAY_METHOD_LABELS = {
+  wallet: 'کیف پول دیجی‌پی',
+  monthly: 'اعتبار ماهانه دیجی‌پی',
+  '4pay': 'اعتبار ۴ قسطه دیجی‌پی',
+  'loan-tejarat': 'وام تجارت',
+  'loan-mellat': 'وام ملت',
+};
+
+const MERCHANT_SEGMENTS = [
+  { id:'s01', cap:'More Code', capKey:'more', trusted:true,  fin:'at',    finLabel:'At Checkout', merchant:'دیجی‌کالا', icon:'🛒' },
+  { id:'s02', cap:'More Code', capKey:'more', trusted:true,  fin:'after', finLabel:'After Checkout', merchant:'تپسی', icon:'🚕' },
+  { id:'s03', cap:'More Code', capKey:'more', trusted:false, fin:'at',    finLabel:'At Checkout', merchant:'تکنولایف', icon:'📱' },
+  { id:'s04', cap:'More Code', capKey:'more', trusted:false, fin:'after', finLabel:'After Checkout', merchant:'آچاره', icon:'🔧' },
+  { id:'s05', cap:'Mid Code',  capKey:'mid',  trusted:true,  fin:'at',    finLabel:'At Checkout', merchant:'مرچنت Mid', icon:'🏪' },
+  { id:'s06', cap:'Mid Code',  capKey:'mid',  trusted:true,  fin:'after', finLabel:'After Checkout', merchant:'مرچنت Mid', icon:'🏪' },
+  { id:'s07', cap:'Mid Code',  capKey:'mid',  trusted:false, fin:'at',    finLabel:'At Checkout', merchant:'مرچنت Mid', icon:'🏪' },
+  { id:'s08', cap:'Mid Code',  capKey:'mid',  trusted:false, fin:'after', finLabel:'After Checkout', merchant:'مرچنت Mid', icon:'🏪' },
+  { id:'s09', cap:'Low Code',  capKey:'low',  trusted:true,  fin:'at',    finLabel:'At Checkout', merchant:'مرچنت Low', icon:'📦' },
+  { id:'s10', cap:'Low Code',  capKey:'low',  trusted:true,  fin:'after', finLabel:'After Checkout', merchant:'مرچنت Low', icon:'📦' },
+  { id:'s11', cap:'Low Code',  capKey:'low',  trusted:false, fin:'at',    finLabel:'At Checkout', merchant:'موبایل ۱۴۰', icon:'📲' },
+  { id:'s12', cap:'Low Code',  capKey:'low',  trusted:false, fin:'after', finLabel:'After Checkout', merchant:'مهمان‌شو', icon:'🏠' },
+];
+
+const USER_LEVELS = [
+  { id:'L0', label:'L0', desc:'کاربر دیجی‌پی نیست', isDigiPay:false },
+  { id:'L1', label:'L1', desc:'مانده کافی · PIN', isDigiPay:true, balanceOk:true },
+  { id:'L2', label:'L2', desc:'مانده ناکافی · Uplift', isDigiPay:true, balanceOk:false },
+  { id:'L3', label:'L3', desc:'بدهکار · بلاک', isDigiPay:true, hasDebt:true },
+];
+
+function buildJourneyConfig(segId, levelId) {
+  const seg = MERCHANT_SEGMENTS.find(s => s.id === segId);
+  const rawLevel = levelId;
+  const isL3 = rawLevel === 'L3' && !debtSettled;
+  const eff = (rawLevel === 'L3' && debtSettled) ? 'L1' : rawLevel;
+  const lvl = USER_LEVELS.find(u => u.id === rawLevel);
+  const effLvl = USER_LEVELS.find(u => u.id === eff);
+  const isLow = seg.capKey === 'low';
+  const isMid = seg.capKey === 'mid';
+  const isMore = seg.capKey === 'more';
+  const isL1 = eff === 'L1';
+  const isL2 = eff === 'L2';
+  const isL0 = eff === 'L0';
+  return {
+    seg, lvl: effLvl, rawLvl: lvl, segId, levelId: eff, rawLevelId: rawLevel,
+    merchantName: seg.merchant,
+    hasFullMerchant: isMore,
+    hasPartialMerchant: isMid,
+    startAtCheckout: isLow,
+    finAtCheckout: seg.fin === 'at',
+    finAfterCheckout: seg.fin === 'after',
+    trusted: seg.trusted,
+    isDigiPayUser: lvl.isDigiPay,
+    isL0, isL1, isL2, isL3,
+    creditPreAllocated: (isL1 || isL2) && isMore,
+    showCreditBanner: isL0 && isMore,
+    showL1Balances: (isL1 || isL2) && isMore,
+    showLoans: (isL1 || isL2) && isMore,
+    needsKYC: isL0,
+    authMethod: isL3 ? 'debt' : lvl.isDigiPay ? 'choice' : 'otp',
+    balanceOk: effLvl.balanceOk !== false,
+    hasDebt: isL3,
+    skipOtpUnderThreshold: isL1,
+    alwaysOTP: !seg.trusted || isL0,
+    showAppInstall: isL0,
+  };
+}
+
+function isL3Debtor() {
+  return activeUserLevel === 'L3' && !debtSettled;
+}
+
+function getCfg() {
+  return journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+}
+
+function renderDashboard() {
+  const caps = ['More Code', 'Mid Code', 'Low Code'];
+  document.getElementById('seg-matrix').innerHTML = caps.map(cap => {
+    const segs = MERCHANT_SEGMENTS.filter(s => s.cap === cap);
+    return `<div class="seg-group"><div class="seg-group-hd">${cap}</div><div class="seg-grid">${segs.map(s => `
+      <div class="seg-cell${s.id === activeSegmentId ? ' active' : ''}" onclick="selectSegment('${s.id}')">
+        <span class="sc-icon">${s.icon}</span>
+        <span class="sc-trust ${s.trusted ? 'yes' : 'no'}">${s.trusted ? 'Trusted' : 'Not Trusted'}</span>
+        <div class="sc-fin">${s.finLabel}</div>
+        <div class="sc-merchant">${s.merchant}</div>
+      </div>`).join('')}</div></div>`;
+  }).join('');
+
+  document.getElementById('user-pills').innerHTML = USER_LEVELS.map(u => `
+    <div class="user-pill${u.id === activeUserLevel ? ' active' : ''}${u.id === 'L0' ? ' done' : ''}" onclick="selectUserLevel('${u.id}')">
+      <div class="up-lvl">${u.label}</div>
+      <div class="up-desc">${u.desc}</div>
+    </div>`).join('');
+
+  renderActiveCombo();
+  renderJourneyPath();
+}
+
+function selectSegment(id) {
+  activeSegmentId = id;
+  renderDashboard();
+  if (journeyStarted) launchJourney();
+  else syncJourneyPreview();
+}
+
+function selectUserLevel(id) {
+  activeUserLevel = id;
+  renderDashboard();
+  if (journeyStarted) launchJourney();
+  else syncJourneyPreview();
+}
+
+function syncJourneyPreview() {
+  journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  updateContextUI();
+  renderActiveCombo();
+  renderJourneyPath();
+  renderPLP();
+}
+
+function renderActiveCombo() {
+  const cfg = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  document.getElementById('active-combo').innerHTML =
+    `<strong>${cfg.seg.merchant}</strong> · ${cfg.seg.cap} · ${cfg.seg.trusted ? 'Trusted ✓' : 'Not Trusted'} · ${cfg.seg.finLabel}<br>کاربر <strong>${cfg.lvl.label}</strong> — ${cfg.lvl.desc}`;
+}
+
+function renderJourneyPath() {
+  const cfg = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  let steps = [];
+  if (cfg.startAtCheckout) {
+    steps = ['ویجت چک‌اوت'];
+  } else if (cfg.hasFullMerchant) {
+    steps = ['PLP', 'PDP', 'سبد', 'چک‌اوت'];
+  } else {
+    steps = ['PLP ساده', 'سبد', 'چک‌اوت'];
+  }
+  if (cfg.levelId === 'L0' && cfg.showCreditBanner) steps.splice(1, 0, 'دریافت اعتبار');
+  if (cfg.isL1 || cfg.isL2) steps.splice(1, 0, 'مانده‌ها');
+  if (cfg.isL3) {
+    steps.splice(1, 0, 'بنر بدهی');
+    steps.push('تسویه / درگاه → L1');
+  } else if (activeUserLevel === 'L3' && debtSettled) {
+    steps.splice(1, 0, 'مانده‌ها');
+    steps.push('→ L1');
+  }
+  if (cfg.isL2) steps.push('Uplift + درگاه');
+  if (cfg.isL1 || cfg.isL2) steps.push('PIN / اپ / OTP');
+  else if (cfg.authMethod === 'otp') steps.push('OTP');
+  if (cfg.finAfterCheckout) steps.push('TY (تخمینی)');
+  else steps.push(cfg.authMethod === 'pin' && cfg.skipOtpUnderThreshold ? 'TY (بدون SEP)' : 'SEP → TY');
+
+  document.getElementById('jp-steps').innerHTML = steps.map((s, i) =>
+    `${i > 0 ? '<span class="jp-arrow">←</span>' : ''}<span class="jp-step${i === 0 ? ' highlight' : ''}">${s}</span>`
+  ).join('');
+}
+
+function updateContextUI() {
+  if (!journeyConfig) return;
+  const cfg = getCfg();
+  const lvlLabel = (activeUserLevel === 'L3' && debtSettled) ? 'L1' : cfg.lvl.label;
+  const t = `${journeyConfig.seg.merchant} · ${lvlLabel} · ${journeyConfig.seg.cap}`;
+  document.getElementById('top-subtitle').textContent = t;
+  document.getElementById('context-chip-text').textContent = `${journeyConfig.seg.id.toUpperCase()} · ${lvlLabel}`;
+  document.querySelector('.m-search').textContent = 'جستجو در ' + journeyConfig.merchantName;
+}
+
+function scrollToDashboard() {
+  document.getElementById('dashboard').scrollIntoView({ behavior:'smooth' });
+}
+
+function launchJourney() {
+  journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  debtSettled = false;
+  journeyStarted = true;
+  resetAll(false);
+  applyJourneyConfig();
+  updateContextUI();
+  document.querySelector('.center-col').scrollIntoView({ behavior:'smooth' });
+}
+
+function applyJourneyConfig() {
+  const cfg = journeyConfig;
+  document.getElementById('fin-banner').classList.toggle('show', cfg.finAfterCheckout);
+  document.getElementById('co-blocked').classList.remove('show');
+  updatePLPBanners();
+  updateCheckoutLayout();
+
+  if (cfg.startAtCheckout) {
+    if (!selectedProduct) {
+      selectedProduct = products[0];
+      cartPromo = selectedProduct.promo;
+    }
+    goToCheckout();
+    document.getElementById('hint').textContent = 'Low Code — شروع مستقیم از ویجت چک‌اوت';
+    return;
+  }
+
+  if (cfg.isL3) {
+    document.getElementById('hint').textContent = 'L3: بنر بدهی در PLP — یا بدون تسویه → چک‌اوت محدود';
+  } else if (cfg.isL2) {
+    document.getElementById('hint').textContent = 'L2: PLP مشابه L1 — مانده ناکافی — مابه‌التفاوت از درگاه';
+  } else if (cfg.isL1) {
+    document.getElementById('hint').textContent = 'L1: مانده‌ها در PLP — محصول انتخاب کن → چک‌اوت';
+  } else if (cfg.showCreditBanner) {
+    document.getElementById('hint').textContent = 'L0: بنر دریافت اعتبار یا انتخاب محصول';
+  } else {
+    document.getElementById('hint').textContent = 'محصول انتخاب کن → سبد → چک‌اوت';
+  }
+}
+
+function getActivePayMethod() {
+  return confirmedPayMethod || paymentMode || selectedPayMethod;
+}
+
+function openOtpFromAuthChoice() {
+  const m = getActivePayMethod();
+  openSheet(m === 'wallet' ? 'otp-wallet' : 'otp-payment');
+}
+
+function openAuthSheet() {
+  if (!journeyConfig) journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  if (isL3Debtor()) return;
+  if (journeyConfig.hasDebt && !debtSettled) { openSheet('debt'); return; }
+  if (journeyConfig.isL1 || journeyConfig.isL2) { openSheet('auth-choice'); return; }
+  if (paymentMode === 'wallet') openSheet('otp-wallet');
+  else openSheet('otp-payment');
+}
+
+function getDiscountAmount() {
+  return getOrderAmount() - getDiscountedAmount();
+}
+
+function getMethodBalanceTomans(method) {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const map = {
+    wallet: BALANCE_TOMANS.wallet,
+    monthly: BALANCE_TOMANS.monthly,
+    '4pay': BALANCE_TOMANS['4pay'],
+    'loan-tejarat': BALANCE_TOMANS['loan-tejarat'],
+    'loan-mellat': BALANCE_TOMANS['loan-mellat'],
+  };
+  if (cfg.isL0 && checkoutVariant === 'init' && method === 'wallet') return 0;
+  if (cfg.isL2) return L2_BALANCE_TOMANS[method] ?? 0;
+  return map[method] ?? 0;
+}
+
+function getGatewayPayableTomans(method) {
+  const order = getDiscountedAmount();
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const balance = getMethodBalanceTomans(method);
+  if (cfg.isL2) return Math.max(0, order - balance);
+  if (method === '4pay') return Math.round(order / 4);
+  return Math.max(0, order - balance);
+}
+
+function methodNeedsGatewayTopup(method) {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  if (cfg.isL2) return getGatewayPayableTomans(method) > 0;
+  if (method === '4pay') return true;
+  if (cfg.isL1 && l1SkipsGateway(method)) return false;
+  return getGatewayPayableTomans(method) > 0;
+}
+
+function getCheckoutPayAmountTomans() {
+  const order = getDiscountedAmount();
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  if (checkoutVariant === 'init' && walletSelected) {
+    return getGatewayPayableTomans('wallet');
+  }
+  if (checkoutVariant === 'allocated' && selectedPayMethod) {
+    const m = selectedPayMethod;
+    if (cfg.isL2) return getGatewayPayableTomans(m);
+    if (m === '4pay') return getGatewayPayableTomans('4pay');
+    if (methodNeedsGatewayTopup(m)) return getGatewayPayableTomans(m);
+    if (cfg.isL1 && l1SkipsGateway(m)) return order;
+  }
+  return order;
+}
+
+function update4PayDetailContent(order) {
+  const container = document.getElementById('detail-4pay-rows');
+  if (!container) return;
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const inst = Math.round(order / 4);
+  const last = order - inst * 3;
+  const rows = [
+    { label: 'قسط اول — امروز', val: inst, bold: true },
+    { label: 'قسط دوم — ۱ اردیبهشت', val: inst },
+    { label: 'قسط سوم — ۱ خرداد', val: inst },
+    { label: 'قسط چهارم — ۱ تیر', val: last },
+  ];
+  let html = rows.map(r =>
+    `<div class="inst-row"><span class="inst-label"${r.bold ? ' style="font-weight:700;color:var(--dp-navy);"' : ''}>${r.label}</span><span class="inst-val">${formatPrice(r.val)} تومان</span></div>`
+  ).join('');
+  if (cfg.isL2) {
+    const bal = getMethodBalanceTomans('4pay');
+    const diff = getGatewayPayableTomans('4pay');
+    html += `<div class="inst-row" style="margin-top:4px;padding-top:6px;border-top:1px solid var(--gray-200);"><span class="inst-label">موجودی اعتبار ۴ قسطه</span><span class="inst-val">${formatPrice(bal)} تومان</span></div>
+      <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val">${formatPrice(diff)} تومان</span></div>`;
+  }
+  container.innerHTML = html;
+  const note = document.querySelector('#detail-4pay .inst-note');
+  if (note) note.textContent = cfg.isL2 ? 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود' : 'بدون سود و کارمزد — قسط اول امروز از درگاه';
+  const sub4 = document.getElementById('fourpay-balance-sub');
+  if (sub4) sub4.textContent = `موجودی: ${formatPrice(getMethodBalanceTomans('4pay'))} تومان`;
+}
+
+function applyDiffOrSufficientUI({ diffRowId, sufficientRowId, diffValId, diff, noteEl, noteWhenDiff, noteWhenOk }) {
+  const diffRow = diffRowId ? document.getElementById(diffRowId) : null;
+  const suffRow = sufficientRowId ? document.getElementById(sufficientRowId) : null;
+  const diffVal = diffValId ? document.getElementById(diffValId) : null;
+  if (diff > 0) {
+    if (diffRow) diffRow.style.display = 'flex';
+    if (suffRow) suffRow.style.display = 'none';
+    if (diffVal) diffVal.textContent = formatPrice(diff) + ' تومان';
+    if (noteEl) noteEl.textContent = noteWhenDiff;
+  } else {
+    if (diffRow) diffRow.style.display = 'none';
+    if (suffRow) suffRow.style.display = 'flex';
+    if (noteEl) noteEl.textContent = noteWhenOk || 'پرداخت کامل از موجودی — بدون درگاه';
+  }
+}
+
+function updateMethodBadges() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  ['wallet', 'monthly', 'loan-tejarat', 'loan-mellat'].forEach(method => {
+    const badge = document.getElementById('badge-' + method);
+    if (!badge) return;
+    if (cfg.isL2) {
+      badge.style.display = 'none';
+      return;
+    }
+    const show = cfg.isL1 || getGatewayPayableTomans(method) === 0;
+    badge.style.display = show ? 'inline-block' : 'none';
+  });
+}
+
+function updateWalletDetailContent(suffix) {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const balance = getMethodBalanceTomans('wallet');
+  const diff = getGatewayPayableTomans('wallet');
+  const isInit = suffix === 'init';
+
+  if (!isInit) {
+    const subEl = document.getElementById('wallet-balance-sub');
+    if (subEl) subEl.textContent = balance > 0 ? `موجودی: ${formatPrice(balance)} تومان` : 'موجودی: ۰ تومان';
+    const balEl = document.getElementById('wallet-bal-val');
+    if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
+    applyDiffOrSufficientUI({
+      diffRowId: 'wallet-diff-row',
+      sufficientRowId: 'wallet-sufficient-row',
+      diffValId: 'wallet-diff-val',
+      diff,
+      noteEl: document.getElementById('wallet-diff-note'),
+      noteWhenDiff: cfg.isL2
+        ? 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود'
+        : (balance > 0
+          ? `${formatPrice(balance)} تومان از کیف پول — مابه‌التفاوت از درگاه`
+          : 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود'),
+      noteWhenOk: 'پرداخت کامل از موجودی کیف پول — بدون درگاه',
+    });
+  } else {
+    const diffEl = document.getElementById('wallet-diff-init-val');
+    const noteEl = document.getElementById('wallet-diff-init-note');
+    if (diffEl) diffEl.textContent = formatPrice(diff) + ' تومان';
+    if (noteEl) noteEl.textContent = 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود';
+  }
+}
+
+function updateMonthlyDetailContent() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const balance = getMethodBalanceTomans('monthly');
+  const diff = getGatewayPayableTomans('monthly');
+  const subEl = document.getElementById('monthly-balance-sub');
+  if (subEl) subEl.textContent = `موجودی: ${formatPrice(balance)} تومان`;
+  const balEl = document.getElementById('monthly-bal-val');
+  if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
+  const diffRow = document.getElementById('monthly-diff-row');
+  const suffRow = document.getElementById('monthly-sufficient-row');
+  const diffEl = document.getElementById('monthly-diff-val');
+  const noteEl = document.getElementById('monthly-detail-note');
+  if (cfg.isL1) {
+    if (diffRow) diffRow.style.display = 'none';
+    if (suffRow) suffRow.style.display = 'none';
+    if (noteEl) noteEl.textContent = 'بدون پیش‌پرداخت — تسویه یکم ماه بعد';
+  } else if (cfg.isL2) {
+    if (diffRow) diffRow.style.display = 'flex';
+    if (suffRow) suffRow.style.display = 'none';
+    if (diffEl) diffEl.textContent = formatPrice(diff) + ' تومان';
+    if (noteEl) noteEl.textContent = 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود';
+  } else {
+    applyDiffOrSufficientUI({
+      diffRowId: 'monthly-diff-row',
+      sufficientRowId: 'monthly-sufficient-row',
+      diffValId: 'monthly-diff-val',
+      diff,
+      noteEl,
+      noteWhenDiff: `${formatPrice(balance)} تومان از اعتبار — مابه‌التفاوت از درگاه`,
+      noteWhenOk: 'بدون پیش‌پرداخت — تسویه یکم ماه بعد',
+    });
+  }
+}
+
+function updateLoanDetailContent(method) {
+  const balance = getMethodBalanceTomans(method);
+  const diff = getGatewayPayableTomans(method);
+  const balEl = document.getElementById(method + '-bal-val');
+  const diffEl = document.getElementById(method + '-diff-val');
+  const noteEl = document.getElementById(method + '-diff-note');
+  if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
+  if (diffEl) diffEl.textContent = formatPrice(diff) + ' تومان';
+  if (noteEl) noteEl.textContent = 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود';
+}
+
+function updateLoanBalanceSubs() {
+  ['loan-tejarat', 'loan-mellat'].forEach(method => {
+    const sub = document.getElementById(method + '-balance-sub');
+    const bal = getMethodBalanceTomans(method);
+    if (sub) sub.textContent = `مانده: ${formatPrice(bal)} تومان`;
+  });
+}
+
+function updatePaymentDetails(activeMethod) {
+  const order = getDiscountedAmount();
+  update4PayDetailContent(order);
+  updateWalletDetailContent('allocated');
+  updateWalletDetailContent('init');
+  updateMonthlyDetailContent();
+  updateLoanDetailContent('loan-tejarat');
+  updateLoanDetailContent('loan-mellat');
+  updateLoanBalanceSubs();
+  updateMethodBadges();
+
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const detailWallet = document.getElementById('detail-wallet');
+  const detailWalletInit = document.getElementById('detail-wallet-init');
+  const showWalletDetail = activeMethod === 'wallet' && !cfg.isL1;
+  if (detailWallet) detailWallet.style.display = showWalletDetail ? 'block' : 'none';
+  if (detailWalletInit) detailWalletInit.style.display = (checkoutVariant === 'init' && walletSelected) ? 'block' : 'none';
+}
+
+function l1SkipsGateway(method) {
+  return method === 'wallet' || method === 'monthly' || (method && method.startsWith('loan'));
+}
+
+function needsGateway(cfg, method) {
+  if (cfg.isL2) return true;
+  if (method === '4pay') return true;
+  if (cfg.isL1 && l1SkipsGateway(method)) return false;
+  if (methodNeedsGatewayTopup(method)) return true;
+  if (cfg.finAfterCheckout && method !== '4pay') return false;
+  if (method === 'monthly' || (method && method.startsWith('loan'))) return false;
+  return true;
+}
+
+function updatePayButton(btn, baseTomans, finalTomans) {
+  if (!btn) return;
+  const rial = finalTomans * 10;
+  if (discountApplied) {
+    btn.innerHTML = `<span class="pay-old">${formatPrice(baseTomans * 10)} ریال</span>پرداخت ${formatPrice(rial)} ریال`;
+  } else {
+    btn.textContent = `پرداخت ${formatPrice(rial)} ریال`;
+  }
+}
+
+function updateSepScreens() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const m = getActivePayMethod() || 'wallet';
+  const payable = cfg.isL2
+    ? getGatewayPayableTomans(m)
+    : getGatewayPayableTomans(m === '4pay' ? '4pay' : m);
+  const rial = payable * 10;
+  const creditAmt = document.getElementById('sep-credit-amount');
+  const creditWords = document.getElementById('sep-credit-words');
+  const creditBtn = document.getElementById('sep-credit-btn');
+  const walletAmt = document.getElementById('sep-wallet-amount');
+  const walletWords = document.getElementById('sep-wallet-words');
+  const walletBtn = document.getElementById('sep-wallet-btn');
+  const diffLabel = cfg.isL2 ? ' — مابه‌التفاوت' : '';
+  const firstInst = cfg.isL2 ? payable : getGatewayPayableTomans('4pay');
+  const firstRial = firstInst * 10;
+  if (creditAmt) creditAmt.textContent = formatPrice(firstRial) + ' ریال';
+  if (creditWords) creditWords.textContent = formatPrice(firstInst) + ' تومان' + (cfg.isL2 ? ' — مابه‌التفاوت' : ' — قسط اول');
+  if (creditBtn) creditBtn.textContent = 'پرداخت ' + formatPrice(firstRial) + ' ریال';
+  if (walletAmt) walletAmt.textContent = formatPrice(rial) + ' ریال';
+  if (walletWords) walletWords.textContent = formatPrice(payable) + ' تومان' + (cfg.isL2 || payable < getDiscountedAmount() ? diffLabel || ' — مابه‌التفاوت' : '');
+  if (walletBtn) walletBtn.textContent = 'پرداخت ' + formatPrice(rial) + ' ریال';
+}
+
+function updateDigipayAppNotif() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const final = getDiscountedAmount();
+  document.getElementById('dp-app-merchant').textContent = cfg.merchantName;
+  document.getElementById('dp-app-amount').textContent = formatPrice(final) + ' تومان';
+}
+
+function openDigipayApp() {
+  closeSheet(false);
+  updateDigipayAppNotif();
+  goFull('digipay-app');
+}
+
+function onDigipayAppCancel() {
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('merchant-scene').classList.remove('active');
+  document.getElementById('checkout-scene').classList.add('active');
+  const key = checkoutVariant === 'allocated' ? 'checkout-allocated' : 'checkout-init';
+  document.getElementById('hint').textContent = hints[key];
+  renderBreadcrumb(key);
+}
+
+function onDigipayAppConfirm() {
+  completeAfterAuth();
+}
+
+function goThankYou(mode) {
+  const m = mode || getActivePayMethod();
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const amount = getDiscountedAmount();
+  document.getElementById('ty-merchant-name').textContent = cfg.merchantName;
+  document.getElementById('ty-pay-method').textContent = PAY_METHOD_LABELS[m] || m;
+  document.getElementById('ty-amount').textContent = formatPrice(amount) + ' تومان';
+  document.getElementById('ty-order-num').textContent = 'شماره سفارش ' + (1156817228 + Math.floor(Math.random() * 10));
+
+  let extra = '';
+  if (m === 'wallet') {
+    const cashback = Math.round(amount * 0.05);
+    extra = `<div class="ty-row"><span class="ty-key">کش‌بک</span><span class="ty-val" style="color:var(--dp-green);">${formatPrice(cashback)} تومان هدیه به کیف پول دیجی‌پی ✓</span></div>`;
+  } else if (m === 'monthly') {
+    extra = `<div class="ty-row"><span class="ty-key">سررسید</span><span class="ty-val">یکم ماه بعد</span></div>`;
+  } else if (m && m.startsWith('loan')) {
+    extra = `<div class="ty-row"><span class="ty-key">بازپرداخت</span><span class="ty-val">۱۲ ماهه — بدون ضامن</span></div>`;
+  } else if (m === '4pay') {
+    extra = `<div class="ty-row"><span class="ty-key">قسط اول</span><span class="ty-val">امروز پرداخت شد ✓</span></div>`;
+  }
+  document.getElementById('ty-extra-rows').innerHTML = extra;
+
+  const install = document.getElementById('ty-install-block');
+  if (install) {
+    install.style.display = (cfg.showAppInstall && m === '4pay') ? 'block' : 'none';
+    const desc = document.getElementById('ty-install-desc');
+    if (desc) desc.textContent = m === '4pay' ? 'برای پرداخت اقساط بعدی' : 'برای مدیریت اعتبار';
+  }
+  document.querySelectorAll('.ty-after-note').forEach(el => {
+    el.style.display = cfg.finAfterCheckout ? 'block' : 'none';
+  });
+  goFull('thankyou');
+}
+
+function completeAfterAuth() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const method = getActivePayMethod();
+  if (!needsGateway(cfg, method)) {
+    goThankYou(method);
+    return;
+  }
+  updateSepScreens();
+  goFull('redirect');
+  const sepScreen = (method === '4pay' && !cfg.isL2) ? 'sep-credit' : 'sep-wallet';
+  setTimeout(() => goFull(sepScreen), 1400);
+}
+
+function afterAppConfirm() {
+  completeAfterAuth();
+}
+
+function afterAuthSuccess() {
+  completeAfterAuth();
+}
+
+function settleDebt() {
+  completeDebtPayment();
+}
+
+function onCreditRowClick() {
+  if (isL3Debtor()) return;
+  openCreditFlow('checkout');
+}
+
+function updateSepDebtScreen() {
+  const rial = DEBT_TOMANS * 10;
+  const amt = document.getElementById('sep-debt-amount');
+  const words = document.getElementById('sep-debt-words');
+  if (amt) amt.textContent = formatPrice(rial) + ' ریال';
+  if (words) words.textContent = formatPrice(DEBT_TOMANS) + ' تومان — بدهی اعتبار اقساطی';
+  const plpAmt = document.getElementById('l3-debt-amount');
+  if (plpAmt) plpAmt.textContent = formatPrice(rial) + ' ریال';
+}
+
+function startDebtGateway(returnTo) {
+  debtPayReturnTo = returnTo;
+  updateSepDebtScreen();
+  goFull('sep-debt');
+}
+
+function payDebtFromPLP() {
+  startDebtGateway('plp');
+}
+
+function settleDebtFromCheckout() {
+  startDebtGateway('checkout');
+}
+
+function completeDebtPayment() {
+  debtSettled = true;
+  journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  closeSheet(false);
+
+  if (debtPayReturnTo === 'plp') {
+    showMerchantPage('plp');
+    renderPLP();
+    document.getElementById('hint').textContent = hints['plp-l1'];
+    renderBreadcrumb('plp');
+  } else {
+    creditAllocated = true;
+    showCheckoutMode();
+    goToCheckout();
+  }
+  updateContextUI();
+  updatePLPBanners();
+  updateCheckoutLayout();
+}
+
+const products = [
+  { id: 'monthly', name: 'انگشتر طلا زنانه مولتی نگین', price: '۴۸,۸۶۴,۰۰۰', promo: 'monthly', img: '💍',
+    plpTag: 'پرداخت ماه بعد با دیجی‌پی',
+    pdpText: 'پرداخت ماه بعد بدون کارمزد و سود با یک کلیک',
+    basketMain: 'الان بخر سرماه پرداخت کن', basketSub: 'به اعتبار دیجی‌پی',
+    desc: 'انگشتر طلای ۱۸ عیار با نگین‌های برلیان' },
+  { id: '4pay', name: 'انگشتر تراش ۷ طلای نورا', price: '۴۹,۴۵۴,۶۲۲', promo: '4pay', img: '💎',
+    plpTag: '۴ قسط ۲۵۰,۰۰۰,۰۰۰ ریالی',
+    pdpText: '۴ قسط ۲,۴۷۲,۷۳۱,۱۰۰ ریال بدون ضمانت',
+    basketMain: 'در ۴ قسط پرداخت کن', basketSub: 'به اعتبار دیجی‌پی',
+    desc: 'انگشتر طلای دست‌ساز با طراحی تراش ۷' },
+  { id: 'wallet', name: 'انگشتر طلا مات با نگین', price: '۵۴,۹۶۳,۹۰۰', promo: 'wallet', img: '✨',
+    plpTag: '۵٪ بازگشت پول',
+    pdpText: 'خرید با کیف پول تا ۵٪ بازگشت پول',
+    basketMain: '۵٪ بازگشت پول', basketSub: 'با کیف پول دیجی‌پی',
+    desc: 'انگشتر طلای مات با نگین طبیعی' },
+  { id: 'loan-tejarat', name: 'گردنبند طلا طرح باروک', price: '۳۲,۰۰۰,۰۰۰', promo: 'loan-tejarat', img: '📿',
+    plpTag: 'پرداخت در ۱۲ ماه',
+    pdpText: 'فقط با ماهی ۱,۳۰۰,۰۰۰ ریال (۱۲ ماهه)',
+    basketMain: 'بازپرداخت ۱۲ ماهه بدون ضامن', basketSub: 'با وام دیجی‌پی',
+    desc: 'گردنبند طلای ۱۸ عیار طرح باروک' }
+];
+
+function parsePrice(str) {
+  if (!str) return 0;
+  const map = {'۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'};
+  const s = str.replace(/,/g, '').replace(/[۰-۹]/g, d => map[d] || d).replace(/[^\d]/g, '');
+  return parseInt(s, 10) || 0;
+}
+
+function formatPrice(num) {
+  return num.toLocaleString('fa-IR');
+}
+
+function getOrderAmount() {
+  return selectedProduct ? parsePrice(selectedProduct.price) : 48864000;
+}
+
+function getDiscountedAmount() {
+  const base = getOrderAmount();
+  if (!discountApplied) return base;
+  return Math.round(base * (100 - DISCOUNT_PERCENT) / 100);
+}
+
+function applyDiscount() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const isAllocated = checkoutVariant === 'allocated' || cfg.creditPreAllocated || creditAllocated;
+  const suffix = isAllocated ? 'allocated' : 'init';
+  const input = document.getElementById('discount-input-' + suffix);
+  const code = (input && input.value.trim()) || '';
+  const msg = document.getElementById('discount-msg-' + suffix);
+  if (code.toUpperCase() !== VALID_DISCOUNT) {
+    discountApplied = false;
+    discountCode = '';
+    ['init', 'allocated'].forEach(s => {
+      const m = document.getElementById('discount-msg-' + s);
+      if (m) {
+        m.textContent = 'کد تخفیف نامعتبر است';
+        m.style.color = 'var(--red)';
+        m.classList.add('show');
+      }
+    });
+    updateCheckoutPrices();
+    return;
+  }
+  discountApplied = true;
+  discountCode = code.toUpperCase();
+  const discountAmt = getDiscountAmount();
+  const discountMsg = `${DISCOUNT_PERCENT}٪ تخفیف — ${formatPrice(discountAmt)} تومان`;
+  ['init', 'allocated'].forEach(s => {
+    const m = document.getElementById('discount-msg-' + s);
+    if (m) {
+      m.textContent = discountMsg;
+      m.style.color = 'var(--dp-green)';
+      m.classList.add('show');
+    }
+  });
+  updateCheckoutPrices();
+}
+
+function updateCheckoutPrices() {
+  const base = getOrderAmount();
+  const final = getDiscountedAmount();
+  const payTomans = getCheckoutPayAmountTomans();
+  const summaryHtml = discountApplied
+    ? `<div class="co-price-old">${formatPrice(base)} تومان</div>
+       <div class="co-price-new">${formatPrice(final)} تومان</div>`
+    : `<div class="co-price-new">${formatPrice(base)} تومان</div>`;
+  ['init', 'allocated'].forEach(s => {
+    const el = document.getElementById('price-summary-' + s);
+    if (el) el.innerHTML = summaryHtml;
+  });
+  updatePayButton(document.getElementById('pay-btn-init'), base, payTomans);
+  const btnAlloc = document.getElementById('pay-btn-allocated');
+  if (btnAlloc && !btnAlloc.disabled) updatePayButton(btnAlloc, base, payTomans);
+  updatePaymentDetails(selectedPayMethod || (walletSelected ? 'wallet' : null));
+}
+
+function updateCheckoutLayout() {
+  const cfg = getCfg();
+  const l3 = cfg.isL3;
+  const showLoans = cfg.showLoans;
+  document.getElementById('block-loans-wrap').classList.toggle('show', !!showLoans);
+  document.getElementById('discount-box-init').style.display = (cfg.isL0 || cfg.isL1 || cfg.isL2) && !l3 ? 'block' : 'none';
+  document.getElementById('discount-box-allocated').style.display = (cfg.isL0 || cfg.isL1 || cfg.isL2) ? 'block' : 'none';
+  const walletWrap = document.getElementById('wallet-wrap-init');
+  if (walletWrap) walletWrap.style.display = l3 ? 'none' : '';
+  const getCta = document.getElementById('credit-get-cta');
+  const debtBadge = document.getElementById('credit-debt-badge');
+  const settleCta = document.getElementById('credit-settle-cta');
+  if (getCta) getCta.style.display = l3 ? 'none' : '';
+  if (debtBadge) debtBadge.style.display = l3 ? 'inline-block' : 'none';
+  if (settleCta) settleCta.style.display = l3 ? 'inline' : 'none';
+  const payInit = document.getElementById('pay-btn-init');
+  if (payInit) payInit.style.display = l3 ? 'none' : '';
+  updateCheckoutPrices();
+}
+
+function renderL1BalanceGrid() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const bal = (method, fallback) => cfg.isL2
+    ? formatPrice(L2_BALANCE_TOMANS[method]) + ' تومان'
+    : fallback;
+  const items = [
+    { title: 'اعتبار ماهانه', amount: bal('monthly', BALANCES.monthly), icon: dpIcon('sm'), cls: '' },
+    { title: 'اعتبار ۴ قسطه', amount: bal('4pay', BALANCES.fourpay), icon: dpIcon('sm'), cls: '' },
+    { title: 'کیف پول', amount: bal('wallet', BALANCES.wallet), icon: dpIcon('sm'), cls: 'wallet-card' },
+    { title: 'وام تجارت', amount: bal('loan-tejarat', BALANCES.loanTejarat), icon: '<span class="loan-icon">🏦</span>', cls: 'loan-card' },
+    { title: 'وام ملت', amount: bal('loan-mellat', BALANCES.loanMellat), icon: '<span class="loan-icon">🏛️</span>', cls: 'loan-card' },
+  ];
+  document.getElementById('l1-balance-inner').innerHTML = items.map(it => `
+    <div class="credit-card ${it.cls}">
+      ${it.icon}
+      <div class="credit-card-body">
+        <div class="credit-card-title">${it.title}</div>
+        <div class="credit-card-amount">${it.amount}</div>
+      </div>
+    </div>`).join('');
+}
+
+function updatePLPBanners() {
+  const banner = document.getElementById('l0-banner');
+  const l3Banner = document.getElementById('l3-debt-banner');
+  const creditRow = document.getElementById('credit-row');
+  const l1Scroll = document.getElementById('l1-balance-scroll');
+  const cfg = getCfg();
+
+  banner.style.display = 'none';
+  if (l3Banner) l3Banner.style.display = 'none';
+  creditRow.classList.remove('visible');
+  l1Scroll.classList.remove('visible');
+
+  if (cfg.isL3) {
+    if (l3Banner) l3Banner.style.display = 'flex';
+    updateSepDebtScreen();
+    return;
+  }
+
+  if (cfg.showL1Balances) {
+    renderL1BalanceGrid();
+    l1Scroll.classList.add('visible');
+  } else if (creditAllocated && cfg.showCreditBanner === false && cfg.isL0) {
+    creditRow.classList.add('visible');
+  } else if (cfg.showCreditBanner && !creditAllocated) {
+    banner.style.display = 'flex';
+    banner.classList.remove('done');
+    banner.querySelector('.l0-banner-text').textContent = 'دریافت اعتبار دیجی‌پی';
+    banner.querySelector('.l0-banner-sub').textContent = 'خرید اقساطی و اعتبار ماهانه';
+    banner.querySelector('.l0-banner-cta').textContent = 'دریافت اعتبار';
+  } else if (creditAllocated) {
+    creditRow.classList.add('visible');
+  }
+}
+
+const DP_LOGO_SRC = 'assets/digipay-logo.png';
+
+function dpIcon(size) {
+  return `<span class="dp-icon dp-icon-${size || 'md'}"><img src="${DP_LOGO_SRC}" alt="دیجی‌پی"></span>`;
+}
+
+function dpBadgeHtml() {
+  return `<div class="dp-badge"><img src="${DP_LOGO_SRC}" alt="دیجی‌پی"></div>`;
+}
+
+function plpOverlayHtml(text) {
+  return `<div class="plp-promo-overlay">${dpIcon('sm')}<div class="dp-promo-text">${text}</div></div>`;
+}
+
+function pdpPromoHtml(text) {
+  return `${dpIcon('md')}<div class="dp-promo-text">${text}</div>`;
+}
+
+function basketPromoHtml(main, sub) {
+  return `${dpIcon('md')}<div class="dp-promo-lines"><div class="dp-promo-main">${main}</div><div class="dp-promo-sub">${sub}</div></div>`;
+}
+
+const hints = {
+  plp: 'L0: بنر دریافت اعتبار یا انتخاب محصول',
+  'plp-l1': 'L1: مانده اعتبار/کیف پول/وام بالا — محصول انتخاب کن',
+  'plp-l2': 'L2: مانده ناکافی — محصول انتخاب کن → چک‌اوت',
+  'plp-l3': 'L3: بنر بدهی — بدون پرومو — پرداخت بدهی → L1',
+  pdp: 'جزئیات محصول — افزودن به سبد خرید',
+  basket: 'سبد خرید — تایید و ادامه به چک‌اوت',
+  'checkout-init': 'کد تخفیف: DIGI1403 — دریافت اعتبار یا کیف پول',
+  'checkout-allocated': '۵ روش + کد تخفیف DIGI1403 — یکی را انتخاب کن',
+  kyc: 'Bottom Sheet — KYC',
+  loading1: 'در حال بررسی... (خودکار → OTP)',
+  'otp-credit': 'کد پیامک را وارد کنید',
+  loading2: 'اعتبارسنجی... (خودکار → نتیجه)',
+  'credit-result': 'هر دو اعتبار فعال شد 🎉',
+  'otp-payment': 'OTP پرداخت — L0 مستقیم',
+  'otp-wallet': 'OTP پرداخت کیف پول',
+  'auth-choice': 'PIN · اپ دیجی‌پی · OTP',
+  'app-confirm': 'تأیید خرید در اپ دیجی‌پی',
+  'digipay-app': 'اپ دیجی‌پی — نوتیف تأیید خرید',
+  pin: 'رمز / بایومتریک — یا سایر روش‌ها',
+  debt: 'تسویه بدهی — L3',
+  insufficient: 'مانده ناکافی — L2',
+  redirect: 'انتقال به درگاه...',
+  'sep-credit': 'Full Page — SEP پیش‌قسط',
+  'sep-debt': 'Full Page — SEP تسویه بدهی',
+  thankyou: 'Thank You — رسید پرداخت',
+};
+
+const breadcrumbs = {
+  plp: ['لیست محصولات'],
+  pdp: ['لیست', 'محصول'],
+  basket: ['لیست', 'سبد'],
+  'checkout-init': ['لیست', 'سبد', 'چک‌اوت'],
+  'checkout-allocated': ['لیست', 'سبد', 'چک‌اوت', '۵ روش'],
+  'auth-choice': ['احراز'],
+  'app-confirm': ['اپ'],
+  pin: ['PIN'],
+  kyc: ['KYC'],
+  loading1: ['بررسی'],
+  'otp-credit': ['OTP'],
+  loading2: ['اعتبارسنجی'],
+  'credit-result': ['فعال‌سازی'],
+  'otp-payment': ['OTP پرداخت'],
+  'otp-wallet': ['OTP'],
+  redirect: ['ریدایرکت'],
+  'sep-credit': ['SEP'],
+  'sep-debt': ['SEP', 'بدهی'],
+  'sep-wallet': ['SEP'],
+  'thankyou-credit': ['Thank You'],
+  'thankyou-monthly': ['Thank You'],
+  'thankyou-wallet': ['Thank You'],
+  thankyou: ['Thank You'],
+  'digipay-app': ['اپ', 'تأیید'],
+};
+
+function renderPLP() {
+  const cfg = getCfg();
+  const showPromos = !cfg.isL3;
+  document.getElementById('plp-grid').innerHTML = products.map(p => `
+    <div class="plp-card" onclick="openPDP('${p.id}')">
+      <div class="plp-img-wrap">
+        <div class="plp-img">${p.img}</div>
+        ${showPromos ? plpOverlayHtml(p.plpTag) : ''}
+      </div>
+      <div class="plp-info">
+        <div class="plp-name">${p.name}</div>
+        <div class="plp-price">${p.price} <span>تومان</span></div>
+      </div>
+    </div>`).join('');
+  updatePLPBanners();
+}
+
+function openPDP(id) {
+  selectedProduct = products.find(p => p.id === id);
+  if (!selectedProduct) return;
+  const cfg = getCfg();
+  const promoEl = document.getElementById('pdp-promo');
+  if (cfg.isL3) {
+    promoEl.style.display = 'none';
+  } else {
+    promoEl.style.display = '';
+    promoEl.className = 'dp-promo-pdp' + (selectedProduct.promo.startsWith('loan') ? ' loan' : '');
+    promoEl.innerHTML = pdpPromoHtml(selectedProduct.pdpText);
+  }
+  document.getElementById('pdp-hero').textContent = selectedProduct.img;
+  document.getElementById('pdp-title').textContent = selectedProduct.name;
+  document.getElementById('pdp-price').textContent = selectedProduct.price;
+  document.getElementById('pdp-desc').textContent = selectedProduct.desc;
+  showMerchantPage('pdp');
+}
+
+function addToCart() {
+  if (!selectedProduct) return;
+  cartPromo = selectedProduct.promo;
+  const cfg = getCfg();
+  const promoEl = document.getElementById('basket-promo');
+  if (cfg.isL3) {
+    promoEl.style.display = 'none';
+  } else {
+    promoEl.style.display = '';
+    promoEl.className = 'dp-promo-basket' + (selectedProduct.promo.startsWith('loan') ? ' loan' : '');
+    promoEl.innerHTML = basketPromoHtml(selectedProduct.basketMain, selectedProduct.basketSub);
+  }
+  document.getElementById('basket-item').innerHTML = `
+    <div class="basket-thumb">${selectedProduct.img}</div>
+    <div class="basket-info">
+      <div class="basket-name">${selectedProduct.name}</div>
+      <div class="basket-price">${selectedProduct.price} تومان</div>
+    </div>`;
+  document.getElementById('basket-total').textContent = selectedProduct.price + ' تومان';
+  showMerchantPage('basket');
+}
+
+function mapCartPromoToMethod(promo) {
+  if (promo === '4pay') return '4pay';
+  if (promo === 'monthly') return 'monthly';
+  if (promo === 'wallet') return 'wallet';
+  if (promo === 'loan-tejarat') return 'loan-tejarat';
+  if (promo === 'loan-mellat') return 'loan-mellat';
+  return promo;
+}
+
+function showMerchantPage(page) {
+  merchantPage = page;
+  document.getElementById('merchant-scene').classList.add('active');
+  document.getElementById('checkout-scene').classList.remove('active');
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+  ['plp', 'pdp', 'basket'].forEach(p => {
+    document.getElementById('page-' + p).style.display = p === page ? 'flex' : 'none';
+    if (p === page) document.getElementById('page-' + p).style.flexDirection = 'column';
+  });
+  const cfg = getCfg();
+  const hintKey = page === 'plp' && cfg.isL3 ? 'plp-l3' : (page === 'plp' && cfg.isL2 ? 'plp-l2' : (page === 'plp' && cfg.isL1 ? 'plp-l1' : page));
+  document.getElementById('hint').textContent = hints[hintKey] || hints[page] || '';
+  renderBreadcrumb(page);
+}
+
+function goToCheckout() {
+  const cfg = getCfg();
+  document.getElementById('merchant-scene').classList.remove('active');
+  document.getElementById('checkout-scene').classList.add('active');
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('fin-banner').classList.toggle('show', cfg.finAfterCheckout);
+  document.getElementById('co-blocked').classList.remove('show');
+
+  const useAllocated = (creditAllocated || cfg.creditPreAllocated) && !cfg.isL3;
+  if (useAllocated) {
+    checkoutVariant = 'allocated';
+    document.getElementById('bg-init').style.display = 'none';
+    document.getElementById('bg-allocated').style.display = 'block';
+    if (cartPromo) selectPayMethod(mapCartPromoToMethod(cartPromo));
+    document.getElementById('hint').textContent = hints['checkout-allocated'];
+    renderBreadcrumb('checkout-allocated');
+  } else {
+    checkoutVariant = 'init';
+    document.getElementById('bg-init').style.display = 'block';
+    document.getElementById('bg-allocated').style.display = 'none';
+    document.getElementById('hint').textContent = hints['checkout-init'];
+    renderBreadcrumb('checkout-init');
+  }
+  updateCheckoutLayout();
+}
+
+function openCreditFlow(source) {
+  const cfg = getCfg();
+  if (cfg.isL3 || !cfg.needsKYC) return;
+  creditFlowSource = source;
+  if (source === 'plp' && creditAllocated) {
+    openSheet('credit-result');
+    return;
+  }
+  openSheet('kyc');
+}
+
+function creditResultContinue() {
+  creditAllocated = true;
+  updatePLPBanners();
+  updateCheckoutLayout();
+  if (creditFlowSource === 'plp') {
+    closeSheet(false);
+    showMerchantPage('plp');
+    document.getElementById('hint').textContent = 'اعتبار فعال شد — محصول انتخاب کن و به سبد برو';
+    renderBreadcrumb('plp');
+  } else {
+    showAllocatedCheckout();
+  }
+}
+
+function clearAutoTimer() {
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+}
+
+function showCheckoutMode() {
+  document.getElementById('merchant-scene').classList.remove('active');
+  document.getElementById('checkout-scene').classList.add('active');
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+}
+
+function goFull(screen) {
+  clearAutoTimer();
+  document.getElementById('merchant-scene').classList.remove('active');
+  document.getElementById('checkout-scene').classList.remove('active');
+  closeSheet(false);
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('fp-' + screen).classList.add('active');
+  if (screen === 'sep-credit' || screen === 'sep-wallet') updateSepScreens();
+  if (screen === 'sep-debt') updateSepDebtScreen();
+  document.getElementById('hint').textContent = hints[screen] || '';
+  renderBreadcrumb(screen);
+}
+
+function openSheet(panel, { keepOpen = true } = {}) {
+  clearAutoTimer();
+  currentSheet = panel;
+  const phone = document.getElementById('phone');
+  const sheet = document.getElementById('bottom-sheet');
+  phone.classList.add('dimmed');
+  sheet.classList.toggle('tall-credit', panel === 'credit-result');
+  document.querySelectorAll('.sheet-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + panel).classList.add('active');
+  if (keepOpen) requestAnimationFrame(() => sheet.classList.add('open'));
+  document.getElementById('hint').textContent = hints[panel] || '';
+  renderBreadcrumb(panel);
+
+  if (panel === 'loading1') {
+    autoTimer = setTimeout(() => openSheet('otp-credit'), 2200);
+  }
+  if (panel === 'loading2') {
+    autoTimer = setTimeout(() => openSheet('credit-result'), 2200);
+  }
+  if (panel === 'credit-result') {
+    const btn = document.querySelector('#panel-credit-result .sheet-btn');
+    btn.textContent = creditFlowSource === 'plp' ? 'ادامه به لیست محصولات' : 'ادامه خرید با اعتبار';
+  }
+}
+
+function closeSheet(animate = true) {
+  clearAutoTimer();
+  currentSheet = null;
+  const phone = document.getElementById('phone');
+  const sheet = document.getElementById('bottom-sheet');
+  sheet.classList.remove('open', 'tall-credit');
+  phone.classList.remove('dimmed');
+  if (!animate) return;
+  if (document.getElementById('checkout-scene').classList.contains('active')) {
+    const key = checkoutVariant === 'allocated' ? 'checkout-allocated' : 'checkout-init';
+    document.getElementById('hint').textContent = hints[key];
+    renderBreadcrumb(key);
+  } else if (document.getElementById('merchant-scene').classList.contains('active')) {
+    document.getElementById('hint').textContent = hints[merchantPage] || '';
+    renderBreadcrumb(merchantPage);
+  }
+}
+
+function renderBreadcrumb(key) {
+  const steps = breadcrumbs[key] || [];
+  document.getElementById('breadcrumb').innerHTML = steps.map((s, i) => {
+    const cls = i === steps.length - 1 ? 'bc-step active' : 'bc-step done';
+    const arrow = i < steps.length - 1 ? '<span class="bc-arrow">›</span>' : '';
+    return `<span class="${cls}">${s}</span>${arrow}`;
+  }).join('');
+}
+
+function selectWallet(e) {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  if (creditAllocated || cfg.creditPreAllocated) return;
+  e.stopPropagation();
+  walletSelected = true;
+  document.getElementById('wallet-wrap-init').classList.add('sel-wallet');
+  document.getElementById('wallet-row').classList.add('sel-green');
+  document.getElementById('wallet-radio').classList.add('on-green');
+  document.getElementById('pay-btn-init').disabled = false;
+  updateCheckoutPrices();
+}
+
+function payWallet() {
+  if (walletSelected && !creditAllocated && !(journeyConfig && journeyConfig.creditPreAllocated)) {
+    confirmedPayMethod = 'wallet';
+    paymentMode = 'wallet';
+    openAuthSheet();
+  }
+}
+
+function selectPayMethod(method) {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  selectedPayMethod = method;
+  ['wallet', 'monthly', '4pay', 'loan-tejarat', 'loan-mellat'].forEach(m => {
+    const block = document.getElementById('block-' + m);
+    const radio = document.getElementById('radio-' + m);
+    if (!block || !radio) return;
+    block.classList.remove('sel-wallet', 'sel-monthly', 'sel-4pay', 'sel-loan');
+    radio.classList.remove('on-green', 'on-blue', 'on-teal', 'on-gold');
+  });
+  const detail4 = document.getElementById('detail-4pay');
+  const detailM = document.getElementById('detail-monthly');
+  const detailW = document.getElementById('detail-wallet');
+  detail4.style.display = 'none';
+  detailM.style.display = 'none';
+  if (detailW) detailW.style.display = 'none';
+  ['loan-tejarat', 'loan-mellat'].forEach(lm => {
+    const d = document.getElementById('detail-' + lm);
+    if (d) d.style.display = 'none';
+  });
+
+  if (method === 'wallet') {
+    document.getElementById('block-wallet').classList.add('sel-wallet');
+    document.getElementById('radio-wallet').classList.add('on-green');
+    if (detailW && !cfg.isL1) detailW.style.display = 'block';
+  } else if (method === 'monthly') {
+    document.getElementById('block-monthly').classList.add('sel-monthly');
+    document.getElementById('radio-monthly').classList.add('on-teal');
+    detailM.style.display = 'block';
+  } else if (method === '4pay') {
+    document.getElementById('block-4pay').classList.add('sel-4pay');
+    document.getElementById('radio-4pay').classList.add('on-blue');
+    detail4.style.display = 'block';
+  } else if (method === 'loan-tejarat' || method === 'loan-mellat') {
+    document.getElementById('block-' + method).classList.add('sel-loan');
+    document.getElementById('radio-' + method).classList.add('on-gold');
+    const detailLoan = document.getElementById('detail-' + method);
+    if (detailLoan && cfg.isL2) detailLoan.style.display = 'block';
+  }
+  document.getElementById('pay-btn-allocated').disabled = false;
+  updateCheckoutPrices();
+}
+
+function payAllocated() {
+  if (!selectedPayMethod) return;
+  confirmedPayMethod = selectedPayMethod;
+  paymentMode = selectedPayMethod;
+  openAuthSheet();
+}
+
+function showAllocatedCheckout() {
+  creditAllocated = true;
+  updatePLPBanners();
+  checkoutVariant = 'allocated';
+  showCheckoutMode();
+  document.getElementById('bg-init').style.display = 'none';
+  document.getElementById('bg-allocated').style.display = 'block';
+  if (cartPromo) selectPayMethod(mapCartPromoToMethod(cartPromo));
+  updateCheckoutLayout();
+  closeSheet();
+  document.getElementById('hint').textContent = hints['checkout-allocated'];
+  renderBreadcrumb('checkout-allocated');
+}
+
+function startRedirect(mode) {
+  if (confirmedPayMethod) {
+    paymentMode = confirmedPayMethod;
+  } else if (mode) {
+    paymentMode = mode;
+  }
+  completeAfterAuth();
+}
+
+function resetAll(relaunch = true) {
+  clearAutoTimer();
+  walletSelected = false;
+  creditAllocated = false;
+  selectedPayMethod = null;
+  paymentMode = null;
+  confirmedPayMethod = null;
+  checkoutVariant = 'init';
+  merchantPage = 'plp';
+  creditFlowSource = 'plp';
+  cartPromo = null;
+  selectedProduct = null;
+  debtSettled = false;
+  debtPayReturnTo = 'plp';
+  discountApplied = false;
+  discountCode = '';
+  journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  document.getElementById('bg-init').style.display = 'block';
+  document.getElementById('bg-allocated').style.display = 'none';
+  document.getElementById('wallet-wrap-init').classList.remove('sel-wallet');
+  document.getElementById('wallet-row').classList.remove('sel-green');
+  document.getElementById('wallet-radio').classList.remove('on-green');
+  document.getElementById('pay-btn-init').disabled = true;
+  document.getElementById('pay-btn-allocated').disabled = true;
+  document.getElementById('fin-banner').classList.remove('show');
+  document.getElementById('co-blocked').classList.remove('show');
+  ['init', 'allocated'].forEach(s => {
+    const input = document.getElementById('discount-input-' + s);
+    const msg = document.getElementById('discount-msg-' + s);
+    if (input) input.value = '';
+    if (msg) { msg.classList.remove('show'); msg.textContent = ''; }
+  });
+  ['wallet', 'monthly', '4pay', 'loan-tejarat', 'loan-mellat'].forEach(m => {
+    const block = document.getElementById('block-' + m);
+    const radio = document.getElementById('radio-' + m);
+    if (block) block.classList.remove('sel-wallet', 'sel-monthly', 'sel-4pay', 'sel-loan');
+    if (radio) radio.classList.remove('on-green', 'on-blue', 'on-teal', 'on-gold');
+  });
+  document.getElementById('detail-4pay').style.display = 'none';
+  document.getElementById('detail-monthly').style.display = 'none';
+  const detailW = document.getElementById('detail-wallet');
+  if (detailW) detailW.style.display = 'none';
+  const detailWInit = document.getElementById('detail-wallet-init');
+  if (detailWInit) detailWInit.style.display = 'none';
+  closeSheet(false);
+  document.querySelectorAll('.fp-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('phone').classList.remove('dimmed');
+  renderPLP();
+  if (relaunch && journeyStarted) {
+    applyJourneyConfig();
+  } else {
+    updateCheckoutLayout();
+  }
+  showMerchantPage('plp');
+}
+
+renderDashboard();
+(function initLevelFromUrl() {
+  const level = new URLSearchParams(location.search).get('level');
+  if (level && USER_LEVELS.some(u => u.id === level)) {
+    activeUserLevel = level;
+    renderDashboard();
+  }
+})();
+updateSepDebtScreen();
+syncJourneyPreview();
+showMerchantPage('plp');
+</script>
+</body>
+</html>
