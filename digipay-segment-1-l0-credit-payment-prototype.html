@@ -1312,7 +1312,7 @@ function getMethodBalanceTomans(method) {
     'loan-tejarat': BALANCE_TOMANS['loan-tejarat'],
     'loan-mellat': BALANCE_TOMANS['loan-mellat'],
   };
-  if (cfg.isL0 && checkoutVariant === 'init' && method === 'wallet') return 0;
+  if (cfg.isL0 && method === 'wallet') return 0;
   if (cfg.isL2) return L2_BALANCE_TOMANS[method] ?? 0;
   return map[method] ?? 0;
 }
@@ -1416,7 +1416,11 @@ function updateWalletDetailContent(suffix) {
 
   if (!isInit) {
     const subEl = document.getElementById('wallet-balance-sub');
-    if (subEl) subEl.textContent = balance > 0 ? `موجودی: ${formatPrice(balance)} تومان` : 'موجودی: ۰ تومان';
+    if (subEl) {
+      subEl.textContent = (cfg.isL0 && balance === 0)
+        ? 'پرداخت آنی از کیف پول'
+        : (balance > 0 ? `موجودی: ${formatPrice(balance)} تومان` : 'موجودی: ۰ تومان');
+    }
     const balEl = document.getElementById('wallet-bal-val');
     if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
     applyDiffOrSufficientUI({
@@ -1925,6 +1929,15 @@ function mapCartPromoToMethod(promo) {
   return promo;
 }
 
+function resolveCheckoutPayMethod(cfg, promo) {
+  if (!promo) return null;
+  let method = mapCartPromoToMethod(promo);
+  if (cfg.isL0 && method.startsWith('loan')) {
+    method = promo === '4pay' ? '4pay' : 'monthly';
+  }
+  return method;
+}
+
 function showMerchantPage(page) {
   merchantPage = page;
   document.getElementById('merchant-scene').classList.add('active');
@@ -1952,7 +1965,7 @@ function goToCheckout() {
     checkoutVariant = 'allocated';
     document.getElementById('bg-init').style.display = 'none';
     document.getElementById('bg-allocated').style.display = 'block';
-    if (cartPromo) selectPayMethod(mapCartPromoToMethod(cartPromo));
+    if (cartPromo) selectPayMethod(resolveCheckoutPayMethod(cfg, cartPromo));
     document.getElementById('hint').textContent = hints['checkout-allocated'];
     renderBreadcrumb('checkout-allocated');
   } else {
@@ -2086,6 +2099,7 @@ function payWallet() {
 
 function selectPayMethod(method) {
   const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
+  if (cfg.isL0 && method.startsWith('loan')) return;
   selectedPayMethod = method;
   ['wallet', 'monthly', '4pay', 'loan-tejarat', 'loan-mellat'].forEach(m => {
     const block = document.getElementById('block-' + m);
@@ -2135,13 +2149,14 @@ function payAllocated() {
 }
 
 function showAllocatedCheckout() {
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
   creditAllocated = true;
   updatePLPBanners();
   checkoutVariant = 'allocated';
   showCheckoutMode();
   document.getElementById('bg-init').style.display = 'none';
   document.getElementById('bg-allocated').style.display = 'block';
-  if (cartPromo) selectPayMethod(mapCartPromoToMethod(cartPromo));
+  if (cartPromo) selectPayMethod(resolveCheckoutPayMethod(cfg, cartPromo));
   updateCheckoutLayout();
   closeSheet();
   document.getElementById('hint').textContent = hints['checkout-allocated'];
