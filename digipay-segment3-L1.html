@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DigiPay — Segment 3 · L1 · تکنولایف</title>
+<title>DigiPay — Journey Hub · S1 + S3 (L0–L1)</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -443,23 +443,22 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
   <!-- ═══ JOURNEY DASHBOARD ═══ -->
   <aside class="dashboard" id="dashboard">
     <div class="dash-head">
-      <h2>📱 Segment 3 · L1</h2>
+      <h2>🗺️ Journey Hub</h2>
       <div class="dash-stats">
-        <div class="dash-stat"><strong>S03</strong>تکنولایف</div>
-        <div class="dash-stat"><strong>L1</strong>مانده کافی</div>
-        <div class="dash-stat"><strong>Untrusted</strong>At Checkout</div>
+        <div class="dash-stat"><strong>۱۲</strong>سگمنت مرچنت</div>
+        <div class="dash-stat"><strong>۴</strong>سطح کاربر</div>
+        <div class="dash-stat"><strong>۴۸</strong>ترکیب جرنی</div>
       </div>
     </div>
     <div class="active-combo" id="active-combo"></div>
     <div class="dash-section">
-      <div class="dash-label">پیکربندی ثابت</div>
-      <div class="active-combo" style="margin-bottom:0;">
-        <strong>تکنولایف</strong> · More Code · Not Trusted · At Checkout<br>
-        کاربر <strong>L1</strong> — مانده کافی · PIN
-      </div>
+      <div class="dash-label">سگمنت مرچنت</div>
+      <div class="seg-matrix" id="seg-matrix"></div>
     </div>
-    <div id="seg-matrix" style="display:none;"></div>
-    <div id="user-pills" style="display:none;"></div>
+    <div class="dash-section">
+      <div class="dash-label">نوع کاربر</div>
+      <div class="user-pills" id="user-pills"></div>
+    </div>
     <div class="journey-path">
       <div class="jp-title">مسیر جرنی</div>
       <div class="jp-steps" id="jp-steps"></div>
@@ -471,8 +470,8 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
   <div class="main">
     <div class="top-bar">
       <div>
-        <h1>DigiPay — Segment 3 · L1</h1>
-        <p id="top-subtitle">تکنولایف · L1 · More Code</p>
+        <h1>DigiPay — Journey Hub</h1>
+        <p id="top-subtitle">سگمنت ۱ · L0 · دیجی‌کالا</p>
       </div>
       <button class="reset-btn" onclick="resetAll()">↺ شروع مجدد</button>
     </div>
@@ -1105,22 +1104,89 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
   <div class="sidebar design-notes-collapsed" id="design-notes-sidebar">
     <div class="design-notes-head">📝 Design Notes</div>
 
-        <div id="notes-panel-s03" class="notes-panel">
+    <div id="notes-panel-s01" class="notes-panel">
+    <div class="note-block">
+      <h3>📋 استراتژی Segment 1</h3>
+      <p class="note-sub">More Code · Trusted · At Checkout</p>
+      <hr class="note-divider">
+    </div>
+
+    <div class="note-block">
+      <h4>قبل از چک‌اوت (PLP / PDP / Basket)</h4>
+      <p>مرچنت بر اساس یک سرویس استعلامی از دیجی‌پی تصمیم می‌گیرد:</p>
+      <p>دیجی‌پی وضعیت اعتبار کاربر را برمی‌گرداند.</p>
+      <p>مرچنت با این داده خودش تصمیم می‌گیرد چه پروموشنی نشان دهد، متن را خودش می‌نویسد. برای نمایش مبلغ هر قسط، دیجی‌پی داده بر اساس کل بسکت ÷ تعداد اقساط را می‌دهد.</p>
+
+      <p><span class="note-num">①</span> وضعیت اعتبار کاربر:</p>
+      <ul>
+        <li><span class="hl">L1/L2</span> → پروموشن خرید + بالانس هر روش پرداخت نمایش داده می‌شود</li>
+        <li><span class="hl">L0</span> → پروموشن دریافت اعتبار رایگان نمایش داده می‌شود</li>
+        <li><span class="hl">L3</span> → خرید اعتباری بلاک است، فقط تسویه بدهی ممکن است</li>
+      </ul>
+
+      <p><span class="note-num">②</span> تقسیم مسئولیت در PLP:</p>
+      <ul>
+        <li>پروموشن روی کارت محصول → مرچنت رندر می‌کند (داده از API دیجی‌پی)</li>
+        <li>محاسبه مبلغ هر قسط → دیجی‌پی (مبلغ کالا ÷ تعداد اقساط)</li>
+        <li>بنر دریافت اعتبار یا تسویه بدهی → ویجت دیجی‌پی</li>
+        <li>نمایش بالانس بالای صفحه → مرچنت با داده API دیجی‌پی</li>
+      </ul>
+
+      <p><span class="note-num">③</span> در PDP و Basket DTO:</p>
+      <ul>
+        <li>رندر پروموشن → مرچنت (با طراحی خودش)</li>
+        <li>داده پروموشن (مبلغ قسط، نوع پیشنهاد) → سرویس استعلامی دیجی‌پی (API)</li>
+      </ul>
+      <hr class="note-divider">
+    </div>
+
+    <div class="note-block">
+      <h4>در Checkout:</h4>
+      <ul>
+        <li>دریافت اعتبار → ویجت دیجی‌پی در Bottom Sheet مرچنت</li>
+        <li>احراز هویت (پین / OTP / تأیید اپ) → ویجت دیجی‌پی در Bottom Sheet</li>
+        <li>جزئیات روش پرداخت → ویجت دیجی‌پی در Dropdown کشویی</li>
+        <li>تسویه بدهی → ویجت دیجی‌پی + Redirect به درگاه پرداخت</li>
+        <li>کد تخفیف → مرچنت (مبلغ کامل + کد به دیجی‌پی ارسال می‌شود)</li>
+      </ul>
+      <hr class="note-divider">
+    </div>
+
+    <div class="note-block">
+      <h4>خلاصه: ویجت کجاست؟</h4>
+      <p class="note-li-green">✅ ویجت دیجی‌پی:</p>
+      <ul class="note-check">
+        <li class="note-li-green">بنر PLP (دریافت اعتبار / تسویه بدهی)</li>
+        <li class="note-li-green">Bottom Sheet چک‌اوت (احراز هویت / دریافت اعتبار)</li>
+        <li class="note-li-green">Dropdown جزئیات روش پرداخت</li>
+        <li class="note-li-green">ریدایرکت تسویه بدهی</li>
+      </ul>
+      <p class="note-li-blue" style="margin-top:8px;">📡 مرچنت با داده API دیجی‌پی:</p>
+      <ul class="note-check">
+        <li class="note-li-blue">پروموشن روی کارت PLP</li>
+        <li class="note-li-blue">پروموشن PDP</li>
+        <li class="note-li-blue">پروموشن Basket DTO</li>
+        <li class="note-li-blue">نمایش بالانس</li>
+      </ul>
+      <hr class="note-divider">
+    </div>
+
+    <div class="note-block">
+      <h4>اصل کلی:</h4>
+      <p>هر جا UX حساس است و دیجی‌پی باید کنترل داشته باشد → <span class="hl">ویجت</span>.</p>
+      <p>هر جا فقط نمایش اطلاعات است → <span class="hl">API + رندر مرچنت</span>.</p>
+    </div>
+
+    <div class="note-block">
+      <h3>راهنمای پروتوتایپ</h3>
+      <p>L0 · L1 · L2 · L3 — سگمنت ۱ (دیجی‌کالا). از Journey Hub سمت چپ سطح کاربر را انتخاب کن.</p>
+    </div>
+    </div><!-- notes-panel-s01 -->
+
+    <div id="notes-panel-s03" class="notes-panel" style="display:none;">
       <div class="note-block">
-        <h3>📋 Segment 3 · L1 — تکنولایف</h3>
+        <h3>📋 استراتژی Segment 3</h3>
         <p class="note-sub">More Code · Untrusted · At Checkout</p>
-      </div>
-      <div class="note-block">
-        <h3>PLP</h3>
-        <p>پروموشن کارت محصولات مشابه سگمنت ۱ L1. بنر بالا فقط نام روش‌های پرداخت — بدون مانده.</p>
-      </div>
-      <div class="note-block">
-        <h3>PDP / Basket DTO</h3>
-        <p>دقیقاً مشابه سگمنت ۱ L1.</p>
-      </div>
-      <div class="note-block">
-        <h3>Checkout</h3>
-        <p>مشابه S1 L1 — ردیف‌ها بدون موجودی + بج کافی. مانده فقط داخل ویجت دیجی‌پی با کلیک.</p>
       </div>
     </div>
 
@@ -1140,8 +1206,8 @@ let merchantPage = 'plp';
 let creditFlowSource = 'plp';
 let cartPromo = null;
 let selectedProduct = null;
-let activeSegmentId = 's03';
-let activeUserLevel = 'L1';
+let activeSegmentId = 's01';
+let activeUserLevel = 'L0';
 let journeyConfig = null;
 let debtSettled = false;
 let debtPayReturnTo = 'plp';
@@ -1252,18 +1318,44 @@ function getCfg() {
 }
 
 function renderDesignNotes() {
-  const el = document.getElementById('notes-panel-s03');
-  if (el) el.style.display = 'block';
+  const panels = { s01: 'notes-panel-s01', s03: 'notes-panel-s03' };
+  const activePanel = panels[activeSegmentId] || null;
+  Object.values(panels).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  if (activePanel) {
+    const el = document.getElementById(activePanel);
+    if (el) el.style.display = 'block';
+  }
   const btn = document.getElementById('notes-toggle');
   if (btn && !document.getElementById('design-notes-sidebar').classList.contains('design-notes-collapsed')) {
-    btn.textContent = '📝 Design Notes — Segment 3 · L1';
+    btn.textContent = activeSegmentId === 's03' ? '📝 Design Notes — Segment 3' : '📝 Design Notes — Segment 1';
   } else if (btn) {
-    btn.textContent = '📝 نوت‌های طراحی — Segment 3 · L1';
+    btn.textContent = activeSegmentId === 's03' ? '📝 نوت‌های طراحی — Segment 3' : '📝 نوت‌های طراحی — Segment 1';
   }
 }
 
 function renderDashboard() {
   renderDesignNotes();
+  const caps = ['More Code', 'Mid Code', 'Low Code'];
+  document.getElementById('seg-matrix').innerHTML = caps.map(cap => {
+    const segs = MERCHANT_SEGMENTS.filter(s => s.cap === cap);
+    return `<div class="seg-group"><div class="seg-group-hd">${cap}</div><div class="seg-grid">${segs.map(s => `
+      <div class="seg-cell${s.id === activeSegmentId ? ' active' : ''}" onclick="selectSegment('${s.id}')">
+        <span class="sc-icon">${s.icon}</span>
+        <span class="sc-trust ${s.trusted ? 'yes' : 'no'}">${s.trusted ? 'Trusted' : 'Not Trusted'}</span>
+        <div class="sc-fin">${s.finLabel}</div>
+        <div class="sc-merchant">${s.merchant}</div>
+      </div>`).join('')}</div></div>`;
+  }).join('');
+
+  document.getElementById('user-pills').innerHTML = USER_LEVELS.map(u => `
+    <div class="user-pill${u.id === activeUserLevel ? ' active' : ''}${u.id === 'L0' ? ' done' : ''}" onclick="selectUserLevel('${u.id}')">
+      <div class="up-lvl">${u.label}</div>
+      <div class="up-desc">${u.desc}</div>
+    </div>`).join('');
+
   renderActiveCombo();
   renderJourneyPath();
 }
@@ -2477,11 +2569,28 @@ function initDesignNotesSidebar() {
 }
 
 renderDashboard();
-journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
-updateContextUI();
+(function initFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const level = params.get('level');
+  const segment = params.get('segment');
+  if (segment && MERCHANT_SEGMENTS.some(s => s.id === segment)) {
+    activeSegmentId = segment;
+  }
+  if (level && USER_LEVELS.some(u => u.id === level)) {
+    activeUserLevel = level;
+  }
+  renderDashboard();
+  if (activeSegmentId === 's03') {
+    document.title = 'DigiPay — Segment 3 · ' + activeUserLevel + ' · تکنولایف';
+  } else if (activeUserLevel === 'L3') {
+    document.title = 'DigiPay — Segment 1 · L3 Debt';
+  }
+})();
 initDesignNotesSidebar();
 window.addEventListener('resize', initDesignNotesSidebar);
-launchJourney();
+updateSepDebtScreen();
+syncJourneyPreview();
+showMerchantPage('plp');
 </script>
 </body>
 </html>
