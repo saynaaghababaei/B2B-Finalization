@@ -503,8 +503,8 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
       <h2>🗺️ Journey Hub</h2>
       <div class="dash-stats">
         <div class="dash-stat"><strong>۸</strong>سگمنت مرچنت</div>
-        <div class="dash-stat"><strong>۴</strong>سطح کاربر</div>
-        <div class="dash-stat"><strong>۳۲</strong>ترکیب جرنی</div>
+        <div class="dash-stat"><strong>۵</strong>سطح کاربر</div>
+        <div class="dash-stat"><strong>۴۰</strong>ترکیب جرنی</div>
       </div>
     </div>
     <div class="active-combo" id="active-combo"></div>
@@ -712,10 +712,21 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
                   <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
                 <div class="inst-detail green-bg" id="detail-wallet" style="display:none;">
-                  <div class="inst-row"><span class="inst-label">موجودی کیف پول</span><span class="inst-val" id="wallet-bal-val">—</span></div>
+                  <div class="inst-row" id="wallet-bal-row"><span class="inst-label">موجودی کیف پول</span><span class="inst-val" id="wallet-bal-val">—</span></div>
                   <div class="inst-row" id="wallet-diff-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="wallet-diff-val">—</span></div>
                   <div class="inst-row" id="wallet-sufficient-row" style="display:none;"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
                   <div class="inst-note" id="wallet-diff-note">—</div>
+                </div>
+              </div>
+
+              <!-- S1 L0 pending — combined credit row (replaces monthly + 4pay) -->
+              <div class="pay-block" id="block-s1-credit-combined" style="display:none;">
+                <div style="display:flex;align-items:center;gap:8px;padding:11px 13px;">
+                  <div class="radio"></div>
+                  <div style="flex:1;"><div class="co-name">خرید اعتباری دیجی‌پی</div><div class="co-sub green" id="s1-credit-combined-balance-sub">—</div></div>
+                  <span class="inactive-badge" id="badge-s1-credit-combined-inactive">غیرفعال</span>
+                  <button type="button" class="pending-action-btn" id="btn-s1-credit-combined-pending">نصب اپ</button>
+                  <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
               </div>
 
@@ -730,7 +741,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
                   <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
                 <div class="inst-detail green-bg" id="detail-monthly" style="display:none;">
-                  <div class="inst-row"><span class="inst-label">موجودی اعتبار ماهانه</span><span class="inst-val" id="monthly-bal-val">—</span></div>
+                  <div class="inst-row" id="monthly-bal-row"><span class="inst-label">موجودی اعتبار ماهانه</span><span class="inst-val" id="monthly-bal-val">—</span></div>
                   <div class="inst-row" id="monthly-diff-row" style="display:none;"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="monthly-diff-val">—</span></div>
                   <div class="inst-row" id="monthly-sufficient-row" style="display:none;"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
                   <div class="inst-row"><span class="inst-label">میزان کارمزد</span><span style="font-weight:700;color:var(--dp-green);">بدون کارمزد</span></div>
@@ -765,7 +776,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
                   <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
                 <div class="inst-detail green-bg" id="detail-loan-tejarat" style="display:none;">
-                  <div class="inst-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-tejarat-bal-val">—</span></div>
+                  <div class="inst-row" id="loan-tejarat-bal-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-tejarat-bal-val">—</span></div>
                   <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="loan-tejarat-diff-val">—</span></div>
                   <div class="inst-note" id="loan-tejarat-diff-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
                 </div>
@@ -781,7 +792,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
                   <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
                 <div class="inst-detail green-bg" id="detail-loan-mellat" style="display:none;">
-                  <div class="inst-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-mellat-bal-val">—</span></div>
+                  <div class="inst-row" id="loan-mellat-bal-row"><span class="inst-label">مانده وام</span><span class="inst-val" id="loan-mellat-bal-val">—</span></div>
                   <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val" id="loan-mellat-diff-val">—</span></div>
                   <div class="inst-note" id="loan-mellat-diff-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
                 </div>
@@ -851,6 +862,13 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
                   <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
                 </div>
                 <div class="mid-dp-widget open" id="mid-dp-widget-pending">
+                  <div class="co-row mid-dp-opt mid-pending-opt" id="mid-pending-credit-combined-row" style="display:none;">
+                    <div class="radio"></div>
+                    <div style="flex:1;"><div class="co-name">خرید اعتباری دیجی‌پی</div><div class="co-sub green" id="mid-pending-credit-combined-sub">—</div></div>
+                    <span class="inactive-badge" id="badge-mid-credit-combined-inactive">غیرفعال</span>
+                    <button class="pending-action-btn" id="btn-mid-credit-combined-pending">نصب اپ</button>
+                    <div class="dp-badge"><img src="assets/digipay-logo.png" alt="دیجی‌پی"></div>
+                  </div>
                   <div class="co-row mid-dp-opt mid-pending-opt" id="mid-pending-monthly-row">
                     <div class="radio"></div>
                     <div style="flex:1;"><div class="co-name">دیجی‌پی اعتبار ماهانه</div><div class="co-sub" id="mid-pending-monthly-sub">پرداخت ماهانه</div></div>
@@ -1457,6 +1475,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
     <div class="note-block">
       <h3>📋 استراتژی Segment 1</h3>
       <p class="note-sub">More Code · Trusted · At Checkout</p>
+      <p style="margin-top:8px;"><span class="hl">تعریف کاربر L0.5:</span> کاربر L0.5 در هر سگمنت همان کاربر L0 آن سگمنت است با این تفاوت که اعتبار را دریافت کرده است ولی اپ را نصب نکرده یا اعتبار را در اپلیکیشن دیجی‌پی فعال نکرده است.</p>
       <hr class="note-divider">
     </div>
 
@@ -1529,7 +1548,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
 
     <div class="note-block">
       <h3>راهنمای پروتوتایپ</h3>
-      <p>L0 · L1 · L2 · L3 — سگمنت ۱ (دیجی‌کالا). از Journey Hub سمت چپ سطح کاربر را انتخاب کن.</p>
+      <p>L0 · L0.5 · L1 · L2 · L3 — سگمنت ۱ (دیجی‌کالا). از Journey Hub سمت چپ سطح کاربر را انتخاب کن.</p>
     </div>
     </div><!-- notes-panel-s01 -->
 
@@ -1538,6 +1557,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
       <div class="note-block">
         <h3>📋 استراتژی Segment 3</h3>
         <p class="note-sub">More Code · Untrusted · At Checkout</p>
+        <p style="margin-top:8px;"><span class="hl">تعریف کاربر L0.5:</span> کاربر L0.5 در هر سگمنت همان کاربر L0 آن سگمنت است با این تفاوت که اعتبار را دریافت کرده است ولی اپ را نصب نکرده یا اعتبار را در اپلیکیشن دیجی‌پی فعال نکرده است.</p>
         <hr class="note-divider">
       </div>
 
@@ -1609,7 +1629,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
 
       <div class="note-block">
         <h3>راهنمای پروتوتایپ</h3>
-        <p>L0 · L1 · L2 · L3 — سگمنت ۳ (تکنولایف). از Journey Hub سمت چپ سطح کاربر را انتخاب کن.</p>
+        <p>L0 · L0.5 · L1 · L2 · L3 — سگمنت ۳ (تکنولایف). از Journey Hub سمت چپ سطح کاربر را انتخاب کن.</p>
       </div>
 
     </div>
@@ -1619,6 +1639,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#12121F;color:var(--gray-900)
       <div class="note-block">
         <h3>📋 استراتژی سگمنت ۵</h3>
         <p class="note-sub">Mid Code · At Checkout</p>
+        <p style="margin-top:8px;"><span class="hl">تعریف کاربر L0.5:</span> کاربر L0.5 در هر سگمنت همان کاربر L0 آن سگمنت است با این تفاوت که اعتبار را دریافت کرده است ولی اپ را نصب نکرده یا اعتبار را در اپلیکیشن دیجی‌پی فعال نکرده است.</p>
         <hr class="note-divider">
       </div>
 
@@ -1737,6 +1758,7 @@ const L2_BALANCE_TOMANS = {
 const VALID_DISCOUNT = 'DIGI1403';
 const DISCOUNT_PERCENT = 10;
 const DEBT_TOMANS = 3200000;
+const LOADING_AUTO_MS = 450;
 
 const PAY_METHOD_LABELS = {
   wallet: 'کیف پول دیجی‌پی',
@@ -1773,10 +1795,18 @@ function isS5OnboardingUser(cfg) {
   return cfg.segId === 's05' && cfg.isMidAtCheckout && (cfg.isL05 || cfg.isL0);
 }
 
+function isS1OnboardingUser(cfg) {
+  return cfg.segId === 's01' && cfg.finAtCheckout && (cfg.isL0 || cfg.isL05);
+}
+
+function isS3OnboardingUser(cfg) {
+  return cfg.segId === 's03' && cfg.finAtCheckout && (cfg.isL0 || cfg.isL05);
+}
+
 function usesCreditOnboardingFlow(cfg) {
   return isS5OnboardingUser(cfg)
-    || (cfg.isL0 && cfg.segId === 's01' && cfg.finAtCheckout)
-    || (cfg.isL0 && cfg.segId === 's03' && cfg.finAtCheckout);
+    || isS1OnboardingUser(cfg)
+    || isS3OnboardingUser(cfg);
 }
 
 function isCreditOnboardingPending(cfg) {
@@ -1784,15 +1814,15 @@ function isCreditOnboardingPending(cfg) {
 }
 
 function isS1L0CheckoutPending(cfg) {
-  return cfg.segId === 's01' && cfg.isL0 && isCreditOnboardingPending(cfg);
+  return isS1OnboardingUser(cfg) && isCreditOnboardingPending(cfg);
 }
 
 function isMoreCodeL0CheckoutInitPending(cfg) {
-  return cfg.isL0 && (cfg.segId === 's01' || cfg.segId === 's03') && isCreditOnboardingPending(cfg);
+  return (cfg.isL0 || cfg.isL05) && (cfg.segId === 's01' || cfg.segId === 's03') && isCreditOnboardingPending(cfg);
 }
 
 function isS3L0ActiveCreditCheckout(cfg) {
-  return cfg.segId === 's03' && cfg.isL0 && creditActive();
+  return isS3OnboardingUser(cfg) && creditActive();
 }
 
 function checkoutUsesInsufficientBalances(cfg) {
@@ -1864,6 +1894,10 @@ function isMidCheckoutMode(cfg) {
 
 function isS5CreditPending(cfg) {
   return cfg.segId === 's05' && cfg.isMidAtCheckout && (cfg.isL0 || cfg.isL05) && creditAllocated && !creditActive();
+}
+
+function isS5L05Entry(cfg) {
+  return cfg.segId === 's05' && cfg.isL05 && cfg.isMidAtCheckout;
 }
 
 function isMidPendingInstall(cfg) {
@@ -2025,7 +2059,16 @@ function getMidConfirmDetailsHtml(method) {
   }
   if (method === 'monthly') {
     const balance = getMethodBalanceTomans('monthly');
-    if (cfg.isMidAtL1) {
+    const hideBal = isS5MidHideBalanceInConfirm(cfg);
+    if (isS5MidL1Checkout(cfg)) {
+      return `<div class="inst-detail green-bg">
+      <div class="inst-row"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
+      <div class="inst-row"><span class="inst-label">میزان کارمزد</span><span style="font-weight:700;color:var(--dp-green);">بدون کارمزد</span></div>
+      <div class="inst-row"><span class="inst-label">زمان سررسید</span><span class="inst-val">یکم ماه بعد</span></div>
+      <div class="inst-note">بدون پیش‌پرداخت — تسویه یکم ماه بعد</div>
+    </div>`;
+    }
+    if (cfg.isMidAtL1 && !hideBal) {
       return `<div class="inst-detail green-bg">
       <div class="inst-row"><span class="inst-label">موجودی اعتبار ماهانه</span><span class="inst-val">${formatPrice(balance)} تومان</span></div>
       <div class="inst-row"><span class="inst-label">میزان کارمزد</span><span style="font-weight:700;color:var(--dp-green);">بدون کارمزد</span></div>
@@ -2034,6 +2077,17 @@ function getMidConfirmDetailsHtml(method) {
     </div>`;
     }
     const diff = getGatewayPayableTomans('monthly');
+    if (hideBal) {
+      const diffRow = diff > 0
+        ? `<div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val">${formatPrice(diff)} تومان</span></div>`
+        : '';
+      return `<div class="inst-detail green-bg">
+      ${diffRow}
+      <div class="inst-row"><span class="inst-label">میزان کارمزد</span><span style="font-weight:700;color:var(--dp-green);">بدون کارمزد</span></div>
+      <div class="inst-row"><span class="inst-label">زمان سررسید</span><span class="inst-val">یکم ماه بعد</span></div>
+      <div class="inst-note">${diff > 0 ? 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود' : 'بدون پیش‌پرداخت — تسویه یکم ماه بعد'}</div>
+    </div>`;
+    }
     return `<div class="inst-detail green-bg">
       <div class="inst-row"><span class="inst-label">موجودی اعتبار ماهانه</span><span class="inst-val">${formatPrice(balance)} تومان</span></div>
       <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val">${formatPrice(diff)} تومان</span></div>
@@ -2043,7 +2097,14 @@ function getMidConfirmDetailsHtml(method) {
     </div>`;
   }
   const balance = getMethodBalanceTomans('wallet');
-  if (cfg.isMidAtL1) {
+  const hideBal = isS5MidHideBalanceInConfirm(cfg);
+  if (isS5MidL1Checkout(cfg)) {
+    return `<div class="inst-detail green-bg">
+    <div class="inst-row"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
+    <div class="inst-note">پرداخت کامل از موجودی کیف پول — بدون درگاه</div>
+  </div>`;
+  }
+  if (cfg.isMidAtL1 && !hideBal) {
     return `<div class="inst-detail green-bg">
     <div class="inst-row"><span class="inst-label">موجودی کیف پول</span><span class="inst-val">${formatPrice(balance)} تومان</span></div>
     <div class="inst-row"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
@@ -2051,6 +2112,18 @@ function getMidConfirmDetailsHtml(method) {
   </div>`;
   }
   const diff = getGatewayPayableTomans('wallet');
+  if (hideBal) {
+    if (diff > 0) {
+      return `<div class="inst-detail green-bg">
+    <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val">${formatPrice(diff)} تومان</span></div>
+    <div class="inst-note">مابه‌التفاوت از طریق درگاه پرداخت می‌شود</div>
+  </div>`;
+    }
+    return `<div class="inst-detail green-bg">
+    <div class="inst-row"><span class="inst-label">وضعیت</span><span class="balance-ok-badge">موجودی کافی ✓</span></div>
+    <div class="inst-note">پرداخت کامل از موجودی کیف پول — بدون درگاه</div>
+  </div>`;
+  }
   return `<div class="inst-detail green-bg">
     <div class="inst-row"><span class="inst-label">موجودی کیف پول</span><span class="inst-val">${formatPrice(balance)} تومان</span></div>
     <div class="inst-row"><span class="inst-label" style="font-weight:700;color:var(--dp-navy);">مابه‌التفاوت قابل پرداخت — امروز</span><span class="inst-val">${formatPrice(diff)} تومان</span></div>
@@ -2189,10 +2262,19 @@ function selectUserLevel(id) {
 
 function syncJourneyPreview() {
   journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
+  const cfg = journeyConfig;
+  if (cfg.isL05 && (cfg.isMidAtCheckout || cfg.finAtCheckout)) {
+    initL05EntryState();
+  } else if (!journeyStarted) {
+    creditAllocated = false;
+    appInstalled = false;
+    creditActivationApproved = false;
+  }
   updateContextUI();
   renderActiveCombo();
   renderJourneyPath();
   renderPLP();
+  updateCheckoutLayout();
 }
 
 function renderActiveCombo() {
@@ -2278,6 +2360,7 @@ function launchJourney() {
 
 function applyJourneyConfig() {
   const cfg = journeyConfig;
+  if (cfg.isL05 && (cfg.isMidAtCheckout || cfg.finAtCheckout)) initL05EntryState();
   document.getElementById('fin-banner').classList.toggle('show', cfg.finAfterCheckout);
   document.getElementById('co-blocked').classList.remove('show');
   updatePLPBanners();
@@ -2310,7 +2393,11 @@ function applyJourneyConfig() {
   } else if (cfg.isL1) {
     document.getElementById('hint').textContent = 'L1: مانده‌ها در PLP — محصول انتخاب کن → چک‌اوت';
   } else if (isCreditOnboardingPending(cfg)) {
-    document.getElementById('hint').textContent = hints['plp-l05-pending'];
+    document.getElementById('hint').textContent = cfg.segId === 's03'
+      ? 'S3 L0.5: بنر اعتبار غیرفعال — نصب اپ — بالانس در ویجت'
+      : cfg.segId === 's05'
+      ? 'S5 L0.5: بنر اعتبار غیرفعال — نصب اپ — چک‌اوت mid-pending'
+      : hints['plp-l05-pending'];
   } else if (cfg.showCreditBanner && cfg.hideMerchantBalances) {
     document.getElementById('hint').textContent = 'S3 L0 Untrusted: بنر اعتبار — بالانس فقط داخل ویجت دیجی‌پی';
   } else if (cfg.showCreditBanner) {
@@ -2353,7 +2440,7 @@ function getMethodBalanceTomans(method) {
     'loan-tejarat': BALANCE_TOMANS['loan-tejarat'],
     'loan-mellat': BALANCE_TOMANS['loan-mellat'],
   };
-  if (cfg.isL0 && method === 'wallet') {
+  if ((cfg.isL0 || cfg.isL05) && method === 'wallet') {
     if (isS5CreditPending(cfg)) return BALANCE_TOMANS.wallet;
     if (!isS1L0CheckoutPending(cfg) && !isS3L0ActiveCreditCheckout(cfg)) return 0;
   }
@@ -2415,6 +2502,18 @@ function isS5MidCheckout(cfg) {
   return cfg.segId === 's05' && cfg.isMidAtCheckout;
 }
 
+function isS5MidL0ActiveCheckout(cfg) {
+  return isS5MidCheckout(cfg) && (cfg.isMidAtL0 || cfg.isMidAtL05) && creditActive();
+}
+
+function isS5MidL1Checkout(cfg) {
+  return isS5MidCheckout(cfg) && cfg.isMidAtL1;
+}
+
+function isS5MidHideBalanceInConfirm(cfg) {
+  return isS5MidL0ActiveCheckout(cfg) || isS5MidL1Checkout(cfg);
+}
+
 function getS5UserBalanceRials(method) {
   const tomans = getMethodBalanceTomans(method);
   return `${formatPrice(tomans * 10)} ریال`;
@@ -2423,6 +2522,13 @@ function getS5UserBalanceRials(method) {
 function updateS5MidCheckoutBalanceSubs() {
   const cfg = getCfg();
   if (!isS5MidCheckout(cfg)) return;
+  if (isS5CreditPending(cfg) && checkoutVariant === 'mid-pending') {
+    const combinedSub = document.getElementById('mid-pending-credit-combined-sub');
+    if (combinedSub) combinedSub.textContent = getS5UserBalanceRials('monthly');
+    const walletEl = document.getElementById('mid-pending-wallet-sub');
+    if (walletEl) walletEl.textContent = getS5UserBalanceRials('wallet');
+    return;
+  }
   const subs = [
     ['mid-init-wallet-sub', 'wallet'],
     ['mid-allocated-monthly-sub', 'monthly'],
@@ -2443,6 +2549,15 @@ function updateS5MidCheckoutBalanceSubs() {
 function updateS5MidPendingUI() {
   const cfg = getCfg();
   const isPending = checkoutVariant === 'mid-pending' && isS5CreditPending(cfg);
+  const combinedRow = document.getElementById('mid-pending-credit-combined-row');
+  const monthlyRow = document.getElementById('mid-pending-monthly-row');
+  const fourPayRow = document.getElementById('mid-pending-4pay-row');
+  if (combinedRow) {
+    combinedRow.style.display = isPending ? '' : 'none';
+    combinedRow.classList.toggle('mid-pending-opt', isPending);
+  }
+  if (monthlyRow) monthlyRow.style.display = isPending ? 'none' : '';
+  if (fourPayRow) fourPayRow.style.display = isPending ? 'none' : '';
   const walletRow = document.getElementById('mid-pending-wallet-row');
   if (walletRow) {
     walletRow.classList.toggle('mid-pending-opt', !isPending);
@@ -2461,6 +2576,42 @@ function updateS5MidPendingUI() {
   if (payFoot) payFoot.style.display = isPending ? '' : 'none';
   const payBtn = document.getElementById('pay-btn-mid-pending');
   if (payBtn && isPending) payBtn.disabled = midSelectedOption !== 'wallet';
+}
+
+function isS1TrustedCheckout(cfg) {
+  return cfg.segId === 's01' && (cfg.isL1 || cfg.isL2);
+}
+
+function isS1L0PostCreditCheckout(cfg) {
+  return isS1OnboardingUser(cfg) && creditAllocated;
+}
+
+function getCheckoutBalanceSubText(cfg, method) {
+  const balance = getMethodBalanceTomans(method);
+  if (isS1TrustedCheckout(cfg)) {
+    return `${formatPrice(balance * 10)} ریال`;
+  }
+  if (isS1L0PostCreditCheckout(cfg) && (method === 'wallet' || method === 'monthly' || method === '4pay')) {
+    return `${formatPrice(balance * 10)} ریال`;
+  }
+  const isLoan = method.startsWith('loan-');
+  const prefix = isLoan ? 'مانده' : 'موجودی';
+  return balance > 0 || !isLoan
+    ? `${prefix}: ${formatPrice(balance)} تومان`
+    : `${prefix}: ۰ تومان`;
+}
+
+function updateS1DetailBalanceRows(cfg) {
+  const s1L1L2 = isS1TrustedCheckout(cfg);
+  const s1L0Credit = isS1L0PostCreditCheckout(cfg);
+  const walletRow = document.getElementById('wallet-bal-row');
+  const monthlyRow = document.getElementById('monthly-bal-row');
+  if (walletRow) walletRow.style.display = (s1L1L2 && cfg.isL2) ? 'none' : '';
+  if (monthlyRow) monthlyRow.style.display = (s1L1L2 || s1L0Credit) ? 'none' : '';
+  ['loan-tejarat-bal-row', 'loan-mellat-bal-row'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (s1L1L2 && cfg.isL2) ? 'none' : '';
+  });
 }
 
 function setRowBalanceSub(elId, text, cfg) {
@@ -2494,7 +2645,7 @@ function update4PayDetailContent(order) {
   container.innerHTML = html;
   const note = document.querySelector('#detail-4pay .inst-note');
   if (note) note.textContent = checkoutUsesInsufficientBalances(cfg) ? 'مابه‌التفاوت از طریق درگاه پرداخت می‌شود' : 'بدون سود و کارمزد — قسط اول امروز از درگاه';
-  setRowBalanceSub('fourpay-balance-sub', `موجودی: ${formatPrice(getMethodBalanceTomans('4pay'))} تومان`, cfg);
+  setRowBalanceSub('fourpay-balance-sub', getCheckoutBalanceSubText(cfg, '4pay'), cfg);
   if (cfg.hideMerchantBalances && !checkoutUsesInsufficientBalances(cfg)) {
     const bal = getMethodBalanceTomans('4pay');
     const balRow = `<div class="inst-row" style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--gray-200);"><span class="inst-label">موجودی اعتبار ۴ قسطه</span><span class="inst-val">${formatPrice(bal)} تومان</span></div>`;
@@ -2548,9 +2699,9 @@ function updateWalletDetailContent(suffix) {
   const isInit = suffix === 'init';
 
   if (!isInit) {
-    const subText = (cfg.isL0 && balance === 0 && !cfg.hideMerchantBalances && !isS3L0ActiveCreditCheckout(cfg))
+    const subText = ((cfg.isL0 || cfg.isL05) && balance === 0 && !cfg.hideMerchantBalances && !isS3L0ActiveCreditCheckout(cfg))
       ? 'پرداخت آنی از کیف پول'
-      : (balance > 0 ? `موجودی: ${formatPrice(balance)} تومان` : 'موجودی: ۰ تومان');
+      : getCheckoutBalanceSubText(cfg, 'wallet');
     setRowBalanceSub('wallet-balance-sub', subText, cfg);
     const balEl = document.getElementById('wallet-bal-val');
     if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
@@ -2580,7 +2731,7 @@ function updateMonthlyDetailContent() {
   const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
   const balance = getMethodBalanceTomans('monthly');
   const diff = getGatewayPayableTomans('monthly');
-  setRowBalanceSub('monthly-balance-sub', `موجودی: ${formatPrice(balance)} تومان`, cfg);
+  setRowBalanceSub('monthly-balance-sub', getCheckoutBalanceSubText(cfg, 'monthly'), cfg);
   const balEl = document.getElementById('monthly-bal-val');
   if (balEl) balEl.textContent = formatPrice(balance) + ' تومان';
   const diffRow = document.getElementById('monthly-diff-row');
@@ -2631,12 +2782,13 @@ function updateLoanDetailContent(method) {
 function updateLoanBalanceSubs() {
   const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
   ['loan-tejarat', 'loan-mellat'].forEach(method => {
-    setRowBalanceSub(method + '-balance-sub', `مانده: ${formatPrice(getMethodBalanceTomans(method))} تومان`, cfg);
+    setRowBalanceSub(method + '-balance-sub', getCheckoutBalanceSubText(cfg, method), cfg);
   });
 }
 
 function updatePaymentDetails(activeMethod) {
   const order = getDiscountedAmount();
+  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
   update4PayDetailContent(order);
   updateWalletDetailContent('allocated');
   updateWalletDetailContent('init');
@@ -2645,8 +2797,8 @@ function updatePaymentDetails(activeMethod) {
   updateLoanDetailContent('loan-mellat');
   updateLoanBalanceSubs();
   updateMethodBadges();
+  updateS1DetailBalanceRows(cfg);
 
-  const cfg = journeyConfig || buildJourneyConfig(activeSegmentId, activeUserLevel);
   const detailWallet = document.getElementById('detail-wallet');
   const detailWalletInit = document.getElementById('detail-wallet-init');
   const showWalletDetail = activeMethod === 'wallet' && ((!cfg.isL1 && !isS1L0CheckoutPending(cfg)) || cfg.hideMerchantBalances || checkoutUsesInsufficientBalances(cfg));
@@ -2966,8 +3118,8 @@ function updateCheckoutLayout() {
   document.getElementById('block-loans-wrap').classList.toggle('show', !!showLoans);
   const blockWallet = document.getElementById('block-wallet');
   if (blockWallet) blockWallet.style.display = l3 ? 'none' : '';
-  document.getElementById('discount-box-init').style.display = (cfg.isL0 || cfg.isL1 || cfg.isL2) && !l3 && !midMode ? 'block' : 'none';
-  document.getElementById('discount-box-allocated').style.display = (cfg.isL0 || cfg.isL1 || cfg.isL2) && !midMode ? 'block' : 'none';
+  document.getElementById('discount-box-init').style.display = (cfg.isL0 || cfg.isL05 || cfg.isL1 || cfg.isL2) && !l3 && !midMode ? 'block' : 'none';
+  document.getElementById('discount-box-allocated').style.display = (cfg.isL0 || cfg.isL05 || cfg.isL1 || cfg.isL2) && !midMode ? 'block' : 'none';
   const walletWrap = document.getElementById('wallet-wrap-init');
   if (walletWrap) walletWrap.style.display = l3 || midMode ? 'none' : '';
   const creditRowInit = document.getElementById('credit-row-init');
@@ -3094,9 +3246,9 @@ function updatePLPBanners() {
     l1Scroll.classList.add('visible');
   } else if (creditAllocated && isS5OnboardingUser(cfg) && creditActive()) {
     creditRow.classList.add('visible');
-  } else if (creditAllocated && cfg.isL0 && cfg.isMidAtL0) {
+  } else if (creditAllocated && (cfg.isL0 || cfg.isL05) && cfg.isMidAtCheckout && creditActive()) {
     creditRow.classList.add('visible');
-  } else if (creditAllocated && cfg.isL0 && cfg.hideMerchantBalances && creditActive()) {
+  } else if (creditAllocated && (cfg.isL0 || cfg.isL05) && cfg.hideMerchantBalances && creditActive()) {
     renderPLPNamesOnlyBanner();
     l1Scroll.classList.add('visible');
   } else if (creditAllocated && cfg.showCreditBanner === false && cfg.isL0) {
@@ -3144,22 +3296,24 @@ const hints = {
   pdp: 'جزئیات محصول — افزودن به سبد خرید',
   basket: 'سبد خرید — تایید و ادامه به چک‌اوت',
   'checkout-init': 'کد تخفیف: DIGI1403 — دریافت اعتبار یا کیف پول',
+  'checkout-s3-l0-pending': 'S3 L0/L0.5: اعتبار دریافت‌شده — نصب اپ — بالانس داخل ویجت',
   'checkout-allocated': '۵ روش + کد تخفیف DIGI1403 — یکی را انتخاب کن',
   'checkout-s3-l0-active': 'S3 L0: مانده ناکافی — بالانس داخل ویجت — مابه‌التفاوت از درگاه — کد: DIGI1403',
-  'checkout-allocated-pending': 'S1 L0: کیف پول فعال — ماهانه/۴قسط غیرفعال — نصب اپ یا فعال‌سازی',
+  'checkout-allocated-pending': 'S1 L0/L0.5: کیف پول فعال — ماهانه/۴قسط غیرفعال — نصب اپ یا فعال‌سازی',
   'checkout-mid-init': 'Mid L0: یک گزینه دیجی‌پی — ویجت: دریافت اعتبار / کیف پول — کد تخفیف: DIGI1403',
   'checkout-mid-allocated': 'Mid L0: ویجت — ماهانه / ۴ قسط / کیف پول — کد تخفیف: DIGI1403',
   'checkout-mid-l1': 'Mid L1: ویجت ۳ روش — کافی برای ماهانه/کیف پول — ۴ قسط پیش‌پرداخت — کد: DIGI1403',
   'checkout-mid-l2': 'Mid L2: ویجت ۳ روش — مانده ناکافی — مابه‌التفاوت از درگاه — کد: DIGI1403',
   'checkout-mid-l3': 'Mid L3: ویجت بدهی — تسویه ‹ → SEP — بعد از تسویه مثل L1',
-  'checkout-mid-pending': 'Mid L0.5: اعتبار غیرفعال — نصب اپ برای فعال‌سازی',
+  'checkout-mid-pending': 'S5 L0/L0.5: اعتبار غیرفعال — نصب اپ — کیف پول فعال',
   onboarding: 'Onboarding — نصب اپ دیجی‌پی پس از دریافت اعتبار',
   sms: 'پیامک — لینک نصب اپ',
   bazaar: 'کافه‌بازار — صفحه نصب دیجی‌پی',
-  installing: 'در حال نصب اپ (۲ ثانیه)',
+  installing: 'در حال نصب اپ',
   'credit-activate': 'فعال‌سازی اعتبار — تأیید / رد',
   'credit-active-success': 'اعتبار فعال شد — ادامه خرید',
   'plp-l05-pending': 'L0.5: بنر اعتبار غیرفعال — نصب اپ',
+  'plp-s05-l05-pending': 'S5 L0.5: اعتبار دریافت‌شده — نصب اپ — چک‌اوت mid-pending',
   'mid-pay-confirm': 'Bottom Sheet — جزئیات + کد تخفیف DIGI1403 + مبلغ بسکت',
   kyc: 'Bottom Sheet — KYC',
   loading1: 'در حال بررسی... (خودکار → OTP)',
@@ -3185,6 +3339,7 @@ const breadcrumbs = {
   pdp: ['لیست', 'محصول'],
   basket: ['لیست', 'سبد'],
   'checkout-init': ['لیست', 'سبد', 'چک‌اوت'],
+  'checkout-s3-l0-pending': ['لیست', 'سبد', 'چک‌اوت', 'نصب اپ'],
   'checkout-allocated': ['لیست', 'سبد', 'چک‌اوت', '۵ روش'],
   'checkout-s3-l0-active': ['لیست', 'سبد', 'چک‌اوت', '۳ روش'],
   'checkout-allocated-pending': ['لیست', 'سبد', 'چک‌اوت', '۳ روش'],
@@ -3290,7 +3445,7 @@ function mapCartPromoToMethod(promo) {
 function resolveCheckoutPayMethod(cfg, promo) {
   if (!promo) return null;
   let method = mapCartPromoToMethod(promo);
-  if (cfg.isL0 && method.startsWith('loan')) {
+  if ((cfg.isL0 || cfg.isL05) && method.startsWith('loan')) {
     method = promo === '4pay' ? '4pay' : 'monthly';
   }
   return method;
@@ -3306,7 +3461,10 @@ function showMerchantPage(page) {
     if (p === page) document.getElementById('page-' + p).style.flexDirection = 'column';
   });
   const cfg = getCfg();
-  const hintKey = page === 'plp' && isCreditOnboardingPending(cfg) ? 'plp-l05-pending' : (page === 'plp' && cfg.isL3 ? 'plp-l3' : (page === 'plp' && cfg.isL2 && cfg.hideMerchantBalances ? 'plp-l2-untrusted' : (page === 'plp' && cfg.isL2 ? 'plp-l2' : (page === 'plp' && cfg.isL1 && cfg.hideMerchantBalances ? 'plp-l1-untrusted' : (page === 'plp' && cfg.isL1 ? 'plp-l1' : page)))));
+  const plpPendingHint = isCreditOnboardingPending(cfg)
+    ? (cfg.segId === 's05' ? 'plp-s05-l05-pending' : 'plp-l05-pending')
+    : null;
+  const hintKey = plpPendingHint || (page === 'plp' && cfg.isL3 ? 'plp-l3' : (page === 'plp' && cfg.isL2 && cfg.hideMerchantBalances ? 'plp-l2-untrusted' : (page === 'plp' && cfg.isL2 ? 'plp-l2' : (page === 'plp' && cfg.isL1 && cfg.hideMerchantBalances ? 'plp-l1-untrusted' : (page === 'plp' && cfg.isL1 ? 'plp-l1' : page)))));
   document.getElementById('hint').textContent = hints[hintKey] || hints[page] || '';
   renderBreadcrumb(page);
 }
@@ -3403,8 +3561,11 @@ function goToCheckout() {
     checkoutVariant = 'init';
     document.getElementById('bg-init').style.display = 'block';
     document.getElementById('bg-allocated').style.display = 'none';
-    document.getElementById('hint').textContent = hints['checkout-init'];
-    renderBreadcrumb('checkout-init');
+    const initHint = isMoreCodeL0CheckoutInitPending(cfg) && cfg.segId === 's03'
+      ? 'checkout-s3-l0-pending'
+      : 'checkout-init';
+    document.getElementById('hint').textContent = hints[initHint];
+    renderBreadcrumb(initHint);
   }
   updateCheckoutLayout();
 }
@@ -3429,25 +3590,43 @@ function startAppInstallFlow() {
 function updateS1L0PendingCheckoutUI() {
   const cfg = getCfg();
   const pending = isS1L0CheckoutPending(cfg);
+  const combined = document.getElementById('block-s1-credit-combined');
+  const combinedSub = document.getElementById('s1-credit-combined-balance-sub');
+  const combinedInactive = document.getElementById('badge-s1-credit-combined-inactive');
+  const combinedBtn = document.getElementById('btn-s1-credit-combined-pending');
+
+  if (combined) {
+    combined.style.display = pending ? 'block' : 'none';
+    combined.classList.toggle('pending-credit-opt', pending);
+  }
+  if (pending && combinedSub) {
+    combinedSub.textContent = `${formatPrice(getMethodBalanceTomans('monthly') * 10)} ریال`;
+  }
+  if (combinedInactive) combinedInactive.style.display = pending ? 'inline-block' : 'none';
+  if (combinedBtn) {
+    combinedBtn.style.display = pending ? 'inline-block' : 'none';
+    if (pending) {
+      combinedBtn.textContent = (appInstalled && creditAllocated && !creditActive()) ? 'فعال‌سازی' : 'نصب اپ';
+      combinedBtn.onclick = function(e) {
+        e.stopPropagation();
+        creditFlowSource = 'checkout';
+        handlePendingPayClick();
+      };
+    }
+  }
+
   ['monthly', '4pay'].forEach(m => {
     const block = document.getElementById('block-' + m);
     const inactiveBadge = document.getElementById('badge-' + m + '-inactive');
     const btn = document.getElementById('btn-' + m + '-pending');
     const detail = document.getElementById('detail-' + m);
-    if (block) block.classList.toggle('pending-credit-opt', pending);
-    if (inactiveBadge) inactiveBadge.style.display = pending ? 'inline-block' : 'none';
-    if (btn) {
-      btn.style.display = pending ? 'inline-block' : 'none';
-      if (pending) {
-        btn.textContent = (appInstalled && creditAllocated && !creditActive()) ? 'فعال‌سازی' : 'نصب اپ';
-        btn.onclick = function(e) {
-          e.stopPropagation();
-          creditFlowSource = 'checkout';
-          handlePendingPayClick();
-        };
-      }
+    if (block) {
+      block.style.display = pending ? 'none' : '';
+      block.classList.toggle('pending-credit-opt', false);
     }
-    if (pending && detail) detail.style.display = 'none';
+    if (inactiveBadge) inactiveBadge.style.display = 'none';
+    if (btn) btn.style.display = 'none';
+    if (detail && pending) detail.style.display = 'none';
   });
   if (pending) {
     const loansWrap = document.getElementById('block-loans-wrap');
@@ -3470,6 +3649,7 @@ function updatePendingBtns() {
       btn.textContent = 'نصب اپ';
       btn.onclick = function(e) {
         e.stopPropagation();
+        creditFlowSource = 'checkout';
         handlePendingPayClick();
       };
     }
@@ -3494,7 +3674,7 @@ function simulateAppInstall() {
   autoTimer = setTimeout(() => {
     showCheckoutMode();
     openSheet('credit-activate');
-  }, 2000);
+  }, LOADING_AUTO_MS);
 }
 
 function confirmCreditActivation() {
@@ -3514,13 +3694,23 @@ function rejectCreditActivation() {
     showCheckoutMode();
     goToCheckout();
     const cfg = getCfg();
-    if (isMidPendingInstall(cfg)) {
-      document.getElementById('hint').textContent = hints['checkout-mid-pending'];
-      renderBreadcrumb('checkout-mid-pending');
+    if (isMidPendingInstall(cfg) || isS1L0CheckoutPending(cfg)) {
+      document.getElementById('hint').textContent = isS1L0CheckoutPending(cfg)
+        ? hints['checkout-allocated-pending']
+        : hints['checkout-mid-pending'];
+      renderBreadcrumb(isS1L0CheckoutPending(cfg) ? 'checkout-allocated-pending' : 'checkout-mid-pending');
+    } else if (isMoreCodeL0CheckoutInitPending(cfg) && cfg.segId === 's03') {
+      document.getElementById('hint').textContent = hints['checkout-s3-l0-pending'];
+      renderBreadcrumb('checkout-s3-l0-pending');
     }
   } else {
     showMerchantPage('plp');
-    document.getElementById('hint').textContent = hints['plp-l05-pending'];
+    const plpCfg = getCfg();
+    document.getElementById('hint').textContent = plpCfg.segId === 's03'
+      ? 'S3 L0.5: بنر اعتبار غیرفعال — نصب اپ — بالانس در ویجت'
+      : plpCfg.segId === 's05'
+      ? hints['plp-s05-l05-pending']
+      : hints['plp-l05-pending'];
     renderBreadcrumb('plp');
   }
 }
@@ -3535,13 +3725,23 @@ function skipOnboarding() {
     showCheckoutMode();
     goToCheckout();
     const cfg = getCfg();
-    if (isMidPendingInstall(cfg)) {
-      document.getElementById('hint').textContent = hints['checkout-mid-pending'];
-      renderBreadcrumb('checkout-mid-pending');
+    if (isMidPendingInstall(cfg) || isS1L0CheckoutPending(cfg)) {
+      document.getElementById('hint').textContent = isS1L0CheckoutPending(cfg)
+        ? hints['checkout-allocated-pending']
+        : hints['checkout-mid-pending'];
+      renderBreadcrumb(isS1L0CheckoutPending(cfg) ? 'checkout-allocated-pending' : 'checkout-mid-pending');
+    } else if (isMoreCodeL0CheckoutInitPending(cfg) && cfg.segId === 's03') {
+      document.getElementById('hint').textContent = hints['checkout-s3-l0-pending'];
+      renderBreadcrumb('checkout-s3-l0-pending');
     }
   } else {
     showMerchantPage('plp');
-    document.getElementById('hint').textContent = hints['plp-l05-pending'];
+    const plpCfg = getCfg();
+    document.getElementById('hint').textContent = plpCfg.segId === 's03'
+      ? 'S3 L0.5: بنر اعتبار غیرفعال — نصب اپ — بالانس در ویجت'
+      : plpCfg.segId === 's05'
+      ? hints['plp-s05-l05-pending']
+      : hints['plp-l05-pending'];
     renderBreadcrumb('plp');
   }
 }
@@ -3553,7 +3753,7 @@ function onboardingCompleteContinue() {
     closeSheet(false);
     showMerchantPage('plp');
     const cfg = getCfg();
-    document.getElementById('hint').textContent = (cfg.isL0 && cfg.hideMerchantBalances)
+    document.getElementById('hint').textContent = ((cfg.isL0 || cfg.isL05) && cfg.hideMerchantBalances)
       ? 'S3 L0 Untrusted: بنر اعتبار — بالانس فقط داخل ویجت دیجی‌پی'
       : 'اعتبار فعال شد — محصول انتخاب کن و به سبد برو';
     renderBreadcrumb('plp');
@@ -3613,14 +3813,14 @@ function openSheet(panel, { keepOpen = true } = {}) {
   renderBreadcrumb(panel);
 
   if (panel === 'loading1') {
-    autoTimer = setTimeout(() => openSheet('otp-credit'), 2200);
+    autoTimer = setTimeout(() => openSheet('otp-credit'), LOADING_AUTO_MS);
   }
   if (panel === 'loading2') {
     autoTimer = setTimeout(() => {
       creditAllocated = true;
       if (usesCreditOnboardingFlow(getCfg())) openSheet('onboarding');
       else openSheet('credit-result');
-    }, 2200);
+    }, LOADING_AUTO_MS);
   }
   if (panel === 'credit-result') {
     const btn = document.querySelector('#panel-credit-result .sheet-btn');
@@ -3681,8 +3881,8 @@ function payWallet() {
 
 function selectPayMethod(method) {
   const cfg = getCfg();
-  if (cfg.isL0 && method.startsWith('loan')) return;
-  if (isS1L0CheckoutPending(cfg) && (method === 'monthly' || method === '4pay')) return;
+  if ((cfg.isL0 || cfg.isL05) && method.startsWith('loan')) return;
+  if (isS1L0CheckoutPending(cfg) && (method === '4pay' || method === 'monthly')) return;
   selectedPayMethod = method;
   ['wallet', 'monthly', '4pay', 'loan-tejarat', 'loan-mellat'].forEach(m => {
     const block = document.getElementById('block-' + m);
@@ -3720,7 +3920,8 @@ function selectPayMethod(method) {
     const detailLoan = document.getElementById('detail-' + method);
     if (detailLoan && (checkoutUsesInsufficientBalances(cfg) || (cfg.hideMerchantBalances && cfg.isL1))) detailLoan.style.display = 'block';
   }
-  document.getElementById('pay-btn-allocated').disabled = false;
+  const payBtn = document.getElementById('pay-btn-allocated');
+  if (payBtn) payBtn.disabled = isS1L0CheckoutPending(cfg) && method !== 'wallet';
   updateCheckoutPrices();
 }
 
@@ -3768,7 +3969,8 @@ function startRedirect(mode) {
 
 function initL05EntryState() {
   const cfg = buildJourneyConfig(activeSegmentId, activeUserLevel);
-  if (cfg.isL05 && cfg.isMidAtCheckout) {
+  if (!cfg.isL05) return;
+  if (cfg.isMidAtCheckout || cfg.finAtCheckout) {
     creditAllocated = true;
     appInstalled = false;
     creditActivationApproved = false;
@@ -3886,6 +4088,8 @@ renderDashboard();
     document.title = 'DigiPay — Segment 3 · ' + activeUserLevel + ' · تکنولایف';
   } else if (activeSegmentId === 's05') {
     document.title = 'DigiPay — Segment 5 · ' + activeUserLevel + ' · Mid At Checkout';
+  } else if (activeSegmentId === 's01') {
+    document.title = 'DigiPay — Segment 1 · ' + activeUserLevel + ' · دیجی‌کالا';
   } else if (activeUserLevel === 'L0.5') {
     document.title = 'DigiPay — Segment 5 · L0.5 · App Onboarding';
   } else if (activeUserLevel === 'L3') {
@@ -3896,7 +4100,6 @@ initDesignNotesSidebar();
 window.addEventListener('resize', initDesignNotesSidebar);
 updateSepDebtScreen();
 syncJourneyPreview();
-initL05EntryState();
 journeyConfig = buildJourneyConfig(activeSegmentId, activeUserLevel);
 updatePLPBanners();
 updateCheckoutLayout();
